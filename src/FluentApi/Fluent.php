@@ -8,7 +8,6 @@ use Dusan\PhpMvc\Database\Model;
 use Dusan\PhpMvc\Database\PdoConstants;
 use Dusan\PhpMvc\Database\Relations\Relation;
 use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
-use Rx\Observable;
 use stdClass;
 
 /**
@@ -108,7 +107,7 @@ class Fluent implements PdoConstants, FluentInterface
     protected $typeBindings;
 
     /**
-     * @var null|array|Observable|Collection
+     * @var null|array|Collection
      */
     protected $data = NULL;
 

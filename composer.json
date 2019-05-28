@@ -1,23 +1,38 @@
 {
-    "name": "dusan/php-mvc-database",
-    "license": "GPL-2.0",
-    "description": "Database package for PhpMvc framework",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Dusan Malusev",
-            "email": "dusan.998@outlook.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Dusan\\PhpMvc\\Database\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Dusan\\PhpMvc\\Tests\\Database\\": "tests/"
-        }
-    },
-    "require": {}
+  "name": "dusan/php-mvc-database",
+  "license": "GPL-2.0",
+  "description": "Database package for PhpMvc framework",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Dusan Malusev",
+      "email": "dusan.998@outlook.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Dusan\\PhpMvc\\Database\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Dusan\\PhpMvc\\Tests\\Database\\": "tests/"
+    }
+  },
+  "require": {
+    "psr/container": "^1.0",
+    "dusan/php-mvc-collections": "^1.0",
+    "ext-pdo": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "8.1.*"
+  },
+  "repositories": [
+    {
+      "branch": "master",
+      "type": "git",
+      "url": "https://github.com/malusev998/PhpMvc-Collections.git"
+    }
+  ]
 }
