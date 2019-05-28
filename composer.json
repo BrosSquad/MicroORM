@@ -1,0 +1,23 @@
+{
+    "name": "dusan/php-mvc-database",
+    "license": "GPL-2.0",
+    "description": "Database package for PhpMvc framework",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Dusan Malusev",
+            "email": "dusan.998@outlook.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dusan\\PhpMvc\\Database\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dusan\\PhpMvc\\Tests\\Database\\": "tests/"
+        }
+    },
+    "require": {}
+}
