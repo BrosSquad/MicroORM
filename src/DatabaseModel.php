@@ -51,17 +51,19 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     private static $container;
 
+    protected static $fields = [];
+
     private $lock = false;
 
     /**
      * @var null|string
      */
-    protected $observer = null;
+    protected static $observer = null;
 
     /**
      * @var null|\Dusan\PhpMvc\Database\Events\Observer
      */
-    private $observerInstance = null;
+    private static $observerInstance = null;
 
     /**
      * Name of column in database for primary key
@@ -107,16 +109,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @var array
      */
     protected $protected = [];
-
-    /**
-     * Members of class that will not be included in $changed
-     * Add members to $restricted array if you don't wont values to be tracked
-     * when insert/update is performed
-     * @api
-     * @example "../../docs/Database/restricted.php"
-     * @var array
-     */
-    protected $restricted = [];
 
     /**
      * When member of class is accessed
@@ -183,19 +175,30 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      *
      * @param array $properties
      */
-    public function __construct(array $properties = [])
+    public function __construct(?array $properties = NULL)
     {
         $this->table = $this->setTable();
-        $this->restricted();
-        $this->setProtected();
+        if(static::$fields === NULL) {
+            static::$fields = $this->getVariables();
+        }
+        $this->protected();
+
         $this->exclude();
-        $this->observer = $this->setObserver();
-        if ($this->observer !== null) {
-            $this->observerInstance = static::$container->get($this->observer);
+        array_flip($this->protected);
+        array_flip($this->guarded);
+
+        if(static::$observer === null) {
+            static::$observer = $this->setObserver();
         }
-        foreach ($properties as $name => $value) {
-            $this->{$name} = $value;
+        if (static::$observer !== null) {
+            static::$observerInstance = static::$container->get(static::$observer);
         }
+        if($properties !== null) {
+            foreach ($properties as $name => $value) {
+                $this->{$name} = $value;
+            }
+        }
+
     }
 
     /**
@@ -217,11 +220,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     public function __get(string $name)
     {
-        $value = parent::__get($name);
-        if ($value === NULL || $value === 'NULL' && !isset($this->memberTypeBindings[$name])) {
-            $this->memberTypeBindings[$name] = PDO::PARAM_NULL;
-        }
-        return $value;
+        return parent::__get($name);
     }
 
     /**
@@ -244,7 +243,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @param        $value
      *
      * @internal
-     * @throws \TypeError
      * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
      */
     public function __set($name, $value)
@@ -264,43 +262,25 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @internal
      * @return void
      */
-    protected function restricted()
+    protected function protected()
     {
-        $this->restricted[] = 'guarded';
-        $this->restricted[] = 'table';
-        $this->restricted[] = 'database';
-        $this->restricted[] = 'protected';
-        $this->restricted[] = 'restricted';
-        $this->restricted[] = 'fillable';
-        $this->restricted[] = 'changed';
-        $this->restricted[] = 'memberTypeBindings';
-        $this->restricted[] = 'alias';
-        $this->restricted[] = 'primaryKey';
-        $this->restricted[] = 'id';
-        $this->restricted[] = 'format';
-        $this->restricted[] = 'lock';
-        $this->restricted[] = 'observer';
-        $this->restricted[] = 'observerInstance';
+        $this->protected[] = 'guarded';
+        $this->protected[] = 'table';
+        $this->protected[] = 'database';
+        $this->protected[] = 'protected';
+        $this->protected[] = 'protected';
+        $this->protected[] = 'fillable';
+        $this->protected[] = 'changed';
+        $this->protected[] = 'memberTypeBindings';
+        $this->protected[] = 'alias';
+        $this->protected[] = 'primaryKey';
+        $this->protected[] = 'id';
+        $this->protected[] = 'format';
+        $this->protected[] = 'lock';
+        $this->protected[] = 'observer';
+        $this->protected[] = 'observerInstance';
     }
 
-    /**
-     * Adding the members of class to protected
-     * filtered with $restricted
-     * @internal
-     * @return void
-     */
-    protected function setProtected(): void
-    {
-        if (count($this->protected) === 0) {
-            $vars = $this->getVariables();
-            foreach ($vars as $key => $value) {
-                $found = array_search($key, $this->restricted);
-                if ($found === false) {
-                    $this->protected[] = $key;
-                }
-            }
-        }
-    }
 
     /**
      * Adding the member of class that will be excluded
@@ -336,7 +316,15 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     protected function excluded(): array
     {
-        return $this->diff($this->getVariables(), $this->guarded);
+        $returnArr = [];
+        foreach(static::$fields as $item)
+        {
+            $value = $this->guarded[$item];
+            if(!isset($value)) {
+                $returnArr[$item] = $value;
+            }
+        }
+        return $returnArr;
     }
 
     /**
@@ -434,6 +422,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      *
      * @return string
      * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
+     * @throws \TypeError
      */
     public function __call($name, $arguments)
     {
@@ -507,7 +496,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         }
     }
 
-    protected function setObserver(): ?string
+    protected static function setObserver(): ?string
     {
         return null;
     }
