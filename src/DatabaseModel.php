@@ -56,12 +56,12 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
     /**
      * @var null|string
      */
-    protected $observer = null;
+    protected static $observer = null;
 
     /**
      * @var null|\Dusan\PhpMvc\Database\Events\Observer
      */
-    private $observerInstance = null;
+    private static $observerInstance = null;
 
     /**
      * Name of column in database for primary key
@@ -189,9 +189,11 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->restricted();
         $this->setProtected();
         $this->exclude();
-        $this->observer = $this->setObserver();
-        if ($this->observer !== null) {
-            $this->observerInstance = static::$container->get($this->observer);
+        if(static::$observer === null) {
+            static::$observer = $this->setObserver();
+        }
+        if (static::$observerInstance !== null) {
+            static::$observerInstance = static::$container->get(static::$observerInstance);
         }
         foreach ($properties as $name => $value) {
             $this->{$name} = $value;
@@ -212,7 +214,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
     /**
      * @param string $name
      *
-     * @throws \Dusan\PhpMvc\Databse\Exceptions\PropertyNotFound
      * @return mixed
      */
     public function __get(string $name)
@@ -244,8 +245,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @param        $value
      *
      * @internal
-     * @throws \TypeError
-     * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
      */
     public function __set($name, $value)
     {
@@ -279,8 +278,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->restricted[] = 'id';
         $this->restricted[] = 'format';
         $this->restricted[] = 'lock';
-        $this->restricted[] = 'observer';
-        $this->restricted[] = 'observerInstance';
     }
 
     /**
@@ -320,13 +317,9 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->guarded[] = 'alias';
         $this->guarded[] = 'primaryKey';
         $this->guarded[] = 'format';
-        $this->guarded[] = 'observer';
-        $this->guarded[] = 'observerInstance';
         $this->guarded[] = 'protected';
         $this->guarded[] = 'restricted';
         $this->guarded[] = 'lock';
-        $this->guarded[] = 'observer';
-        $this->guarded[] = 'observerInstance';
     }
 
     /**
@@ -433,7 +426,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @param $arguments
      *
      * @return string
-     * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
      */
     public function __call($name, $arguments)
     {
