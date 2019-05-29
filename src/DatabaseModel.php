@@ -51,6 +51,8 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     private static $container;
 
+    protected static $fields = [];
+
     private $lock = false;
 
     /**
@@ -107,16 +109,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @var array
      */
     protected $protected = [];
-
-    /**
-     * Members of class that will not be included in $changed
-     * Add members to $restricted array if you don't wont values to be tracked
-     * when insert/update is performed
-     * @api
-     * @example "../../docs/Database/restricted.php"
-     * @var array
-     */
-    protected $restricted = [];
 
     /**
      * When member of class is accessed
@@ -183,21 +175,30 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      *
      * @param array $properties
      */
-    public function __construct(array $properties = [])
+    public function __construct(?array $properties = NULL)
     {
         $this->table = $this->setTable();
-        $this->restricted();
-        $this->setProtected();
+        if(static::$fields === NULL) {
+            static::$fields = $this->getVariables();
+        }
+        $this->protected();
+
         $this->exclude();
+        array_flip($this->protected);
+        array_flip($this->guarded);
+
         if(static::$observer === null) {
             static::$observer = $this->setObserver();
         }
-        if (static::$observerInstance !== null) {
-            static::$observerInstance = static::$container->get(static::$observerInstance);
+        if (static::$observer !== null) {
+            static::$observerInstance = static::$container->get(static::$observer);
         }
-        foreach ($properties as $name => $value) {
-            $this->{$name} = $value;
+        if($properties !== null) {
+            foreach ($properties as $name => $value) {
+                $this->{$name} = $value;
+            }
         }
+
     }
 
     /**
@@ -218,11 +219,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     public function __get(string $name)
     {
-        $value = parent::__get($name);
-        if ($value === NULL || $value === 'NULL' && !isset($this->memberTypeBindings[$name])) {
-            $this->memberTypeBindings[$name] = PDO::PARAM_NULL;
-        }
-        return $value;
+        return parent::__get($name);
     }
 
     /**
@@ -263,7 +260,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @internal
      * @return void
      */
-    protected function restricted()
+    protected function protected()
     {
         $this->restricted[] = 'guarded';
         $this->restricted[] = 'table';
@@ -280,24 +277,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->restricted[] = 'lock';
     }
 
-    /**
-     * Adding the members of class to protected
-     * filtered with $restricted
-     * @internal
-     * @return void
-     */
-    protected function setProtected(): void
-    {
-        if (count($this->protected) === 0) {
-            $vars = $this->getVariables();
-            foreach ($vars as $key => $value) {
-                $found = array_search($key, $this->restricted);
-                if ($found === false) {
-                    $this->protected[] = $key;
-                }
-            }
-        }
-    }
 
     /**
      * Adding the member of class that will be excluded
@@ -329,7 +308,15 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     protected function excluded(): array
     {
-        return $this->diff($this->getVariables(), $this->guarded);
+        $returnArr = [];
+        foreach(static::$fields as $item)
+        {
+            $value = $this->guarded[$item];
+            if(!isset($value)) {
+                $returnArr[$item] = $value;
+            }
+        }
+        return $returnArr;
     }
 
     /**
@@ -499,7 +486,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         }
     }
 
-    protected function setObserver(): ?string
+    protected static function setObserver(): ?string
     {
         return null;
     }
