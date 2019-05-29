@@ -11,7 +11,6 @@ use Dusan\PhpMvc\Database\Traits\ObjectVariables;
 use Dusan\PhpMvc\Database\Traits\Save;
 use Dusan\PhpMvc\Database\Traits\Update;
 use Exception;
-use PDO;
 use JsonSerializable;
 use Dusan\PhpMvc\Database\FluentApi\Fluent;
 use Dusan\PhpMvc\Database\Traits\GetDateTime;
@@ -110,6 +109,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     protected $protected = [];
 
+    protected $fillable = [];
     /**
      * When member of class is accessed
      * name of the member is added to $changed
@@ -184,8 +184,8 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->protected();
 
         $this->exclude();
-        array_flip($this->protected);
-        array_flip($this->guarded);
+        $this->protected = array_flip($this->protected);
+        $this->guarded = array_flip($this->guarded);
 
         if(static::$observer === null) {
             static::$observer = $this->setObserver();
@@ -216,6 +216,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @param string $name
      *
      * @return mixed
+     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
     public function __get(string $name)
     {
@@ -242,6 +243,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * @param        $value
      *
      * @internal
+     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
     public function __set($name, $value)
     {
@@ -262,19 +264,19 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     protected function protected()
     {
-        $this->restricted[] = 'guarded';
-        $this->restricted[] = 'table';
-        $this->restricted[] = 'database';
-        $this->restricted[] = 'protected';
-        $this->restricted[] = 'restricted';
-        $this->restricted[] = 'fillable';
-        $this->restricted[] = 'changed';
-        $this->restricted[] = 'memberTypeBindings';
-        $this->restricted[] = 'alias';
-        $this->restricted[] = 'primaryKey';
-        $this->restricted[] = 'id';
-        $this->restricted[] = 'format';
-        $this->restricted[] = 'lock';
+        $this->protected[] = 'guarded';
+        $this->protected[] = 'table';
+        $this->protected[] = 'database';
+        $this->protected[] = 'protected';
+        $this->protected[] = 'restricted';
+        $this->protected[] = 'fillable';
+        $this->protected[] = 'changed';
+        $this->protected[] = 'memberTypeBindings';
+        $this->protected[] = 'alias';
+        $this->protected[] = 'primaryKey';
+        $this->protected[] = 'id';
+        $this->protected[] = 'format';
+        $this->protected[] = 'lock';
     }
 
 
@@ -297,7 +299,6 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->guarded[] = 'primaryKey';
         $this->guarded[] = 'format';
         $this->guarded[] = 'protected';
-        $this->guarded[] = 'restricted';
         $this->guarded[] = 'lock';
     }
 
@@ -398,21 +399,13 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
     }
 
     /**
-     * @internal
-     * @return string
-     */
-    private function getProtectedGlued(): string
-    {
-        return $this->joinArrayByComma($this->protected);
-    }
-
-    /**
      * @inheritdoc
      *
      * @param $name
      * @param $arguments
      *
      * @return string
+     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
     public function __call($name, $arguments)
     {

@@ -15,7 +15,7 @@ class DatabaseTest extends TestCase
      * @before
      */
     public function getInstanceOfMySqlDatabase() {
-        $pdo = new PDO('mysql:dbname=cpack_dev;host=localhost;charset=utf8', 'root', 'Pa$$w0rd');
+        $pdo = new PDO('mysql:dbname=cpack_dev;host=localhost;charset=utf8', 'dusan', 'Pa$$w0rd');
         $this->driver = new MySqlDatabase($pdo);
     }
 

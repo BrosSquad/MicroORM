@@ -15,11 +15,26 @@ trait Insert
      */
     protected final function insert(): string
     {
-        $sql = 'INSERT INTO ' . $this->getTable() . '(' . $this->getProtectedGlued() . ') VALUES (' .
-            $this->joinArrayByComma(array_map(function ($item) {
-                return ':' . strtolower($item);
-            }, $this->protected));
+        if(count($this->fillable) === 0) {
+            $insert = [];
+            $variables = $this->getVariables();
+            foreach( $variables as $item => $value ) {
+                if(!key_exists($item, $this->protected)) {
+                    $insert[] = $item;
+                }
+            }
+        } else {
+            $insert = $this->fillable;
+        }
 
+        $sql = 'INSERT INTO ' . $this->getTable() . '(' . join(',', $insert) . ') VALUES (' .
+            array_reduce($insert, function ($total, $item) {
+                if(empty($total)) {
+                    return ':' .$item;
+                } else {
+                    return $total . ',:' . $item;
+                }
+            }, '');
         return $sql . ')';
     }
 

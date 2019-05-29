@@ -17,7 +17,7 @@ class DatabaseModelTest extends DatabaseTest
             $user->password = 'password';
             $sql = $user->testInsert();
             $this->assertEquals(
-                'INSERT INTO users(name, surname, email, password) VALUES (:name, :surname, :email, :password)',
+                'INSERT INTO users(name,surname,email,password) VALUES (:name,:surname,:email,:password)',
                 $sql,
                 'Insert is ok'
             );
@@ -64,7 +64,7 @@ class DatabaseModelTest extends DatabaseTest
         ]);
         $sql = $user->testInsert();
         $this->assertEquals(
-            'INSERT INTO users(name, surname, email, password) VALUES (:name, :surname, :email, :password)',
+            'INSERT INTO users(name,surname,email,password) VALUES (:name,:surname,:email,:password)',
             $sql,
             'Insert is ok'
         );
