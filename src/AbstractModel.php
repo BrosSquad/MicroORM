@@ -7,7 +7,7 @@ namespace Dusan\PhpMvc\Database;
 
 
 use Dusan\PhpMvc\Database\Traits\MemberWithDash;
-use Dusan\PhpMvc\Exceptions\PropertyNotFound;
+use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
 
 abstract class AbstractModel
 {
@@ -17,7 +17,7 @@ abstract class AbstractModel
      * @param string $name
      *
      * @return mixed
-     * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
+     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
     public function __get(string $name)
     {
@@ -36,7 +36,7 @@ abstract class AbstractModel
      * @param string $name
      * @param mixed  $value
      *
-     * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
+     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
     public function __set(string $name, $value)
     {
