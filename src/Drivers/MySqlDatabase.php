@@ -16,10 +16,6 @@ use TypeError;
 
 /**
  * Database Connection class fo MySql driver
- * <b>
- * Do to extend this database driver, if you want custom database driver create new class and
- * implement the Driver interface
- * </b>
  *
  * @package Dusan\PhpMvc\Database
  * @author  Dusan Malusev
@@ -91,6 +87,7 @@ final class MySqlDatabase implements Driver
 
     /**
      * @inheritDoc
+     * @throws \PDOException
      */
     public final function sql(string $sql): Driver
     {
@@ -238,6 +235,7 @@ final class MySqlDatabase implements Driver
 
     /**
      * @inheritDoc
+     * @throws \PDOException
      */
     public final function getLastInsertedRow(string $table, string $primaryKey = 'id')
     {
@@ -248,11 +246,13 @@ final class MySqlDatabase implements Driver
 
     /**
      * Executes the prepared statement
+     *
      * @param \Closure $fn
      * @param int|null $fetchMode
-     * @param bool $insertOrUpdate
+     * @param bool     $insertOrUpdate
      *
      * @return array|bool
+     * @throws \PDOException
      */
     private final function execution(Closure $fn, ?int $fetchMode = NULL, $insertOrUpdate = false)
     {
@@ -288,6 +288,7 @@ final class MySqlDatabase implements Driver
 
     /**
      * @inheritDoc
+     * @throws \PDOException
      */
     public final function execute(?int $fetchMode = NULL, $insertOrUpdate = false)
     {

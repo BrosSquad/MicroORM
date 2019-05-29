@@ -122,7 +122,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * When member of class is accessed
      * name of the member is added to $changed
      * for later use with insert() and update() methods
-     *
+     * <b>Tracks changed for update statement</b>
      * @internal
      * @source
      * @var array
@@ -143,7 +143,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
     /**
      * Guarded array restricts the Json serializes from showing
      * it as output
-     *
+     * <b>Serialization</b>
      * @example "../../docs/Database/restricted.php"
      * @var array
      */
@@ -212,8 +212,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
     /**
      * @param string $name
      *
-     * @throws \TypeError
-     * @throws \Dusan\PhpMvc\Exceptions\PropertyNotFound
+     * @throws \Dusan\PhpMvc\Databse\Exceptions\PropertyNotFound
      * @return mixed
      */
     public function __get(string $name)
@@ -270,6 +269,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->restricted[] = 'guarded';
         $this->restricted[] = 'table';
         $this->restricted[] = 'database';
+        $this->restricted[] = 'protected';
         $this->restricted[] = 'restricted';
         $this->restricted[] = 'fillable';
         $this->restricted[] = 'changed';
@@ -322,6 +322,7 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         $this->guarded[] = 'format';
         $this->guarded[] = 'observer';
         $this->guarded[] = 'observerInstance';
+        $this->guarded[] = 'protected';
         $this->guarded[] = 'restricted';
         $this->guarded[] = 'lock';
         $this->guarded[] = 'observer';

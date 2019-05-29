@@ -3,11 +3,11 @@
 namespace Dusan\PhpMvc\Tests\Database\FluentApi;
 
 
-use Dusan\PhpMvc\Database\Drivers\MySqlDatabase;
-use Dusan\PhpMvc\Tests\Models\User;
-use Dusan\PhpMvc\Tests\PhpMvcTestCase;
+use Dusan\PhpMvc\Tests\Database\DatabaseTest;
+use Dusan\PhpMvc\Tests\Database\Models\User;
+use Exception;
 
-class FluentApiTest extends PhpMvcTestCase
+class FluentApiTest extends DatabaseTest
 {
     /**
      * @test
@@ -19,7 +19,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users     LIMIT :start, :end;', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -34,7 +34,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT name, surname FROM users', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
 
@@ -48,7 +48,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT name, surname FROM users  WHERE name LIKE :name', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -61,7 +61,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT name, surname FROM users  WHERE name IS NULL', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -73,7 +73,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT name, surname FROM users  WHERE name IS NOT NULL', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -85,7 +85,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users    ORDER BY name ASC', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -97,7 +97,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users    ORDER BY name DESC', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -110,7 +110,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT name FROM users   GROUP BY name', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -122,7 +122,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users INNER JOIN comments ON comments.user_id = users.id', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -134,7 +134,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users LEFT JOIN comments ON comments.user_id = users.id', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -146,7 +146,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users INNER JOIN roles ON users.role_id = roles.id', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -158,7 +158,7 @@ class FluentApiTest extends PhpMvcTestCase
                 ->getSql();
             $this->assertNotNull($sql);
             $this->assertEquals('SELECT * FROM users RIGHT JOIN comments ON comments.user_id = users.id', $sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }

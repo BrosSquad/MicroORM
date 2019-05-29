@@ -97,7 +97,6 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      *
      * @example "../../docs/Database/find.php"
      * @return static|null If there is no record in database null is returned
-     * @throws \PDOException
      */
     protected function find($id, $select = ['*']): ?Model
     {

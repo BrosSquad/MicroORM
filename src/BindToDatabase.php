@@ -4,6 +4,12 @@ namespace Dusan\PhpMvc\Database;
 
 use Dusan\PhpMvc\Collections\Set;
 
+/**
+ * Interface BindToDatabase
+ *
+ * @example "../docs/Database/CustomBindings.php"
+ * @package Dusan\PhpMvc\Database
+ */
 interface BindToDatabase
 {
     /**

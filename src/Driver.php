@@ -196,4 +196,6 @@ interface Driver
     public function commit(): bool;
 
     public function __destruct();
+
+    public static function setCustomTypes(string $type, BindToDatabase $bind);
 }

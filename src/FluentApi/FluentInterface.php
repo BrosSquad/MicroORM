@@ -122,7 +122,7 @@ interface FluentInterface
      */
     public function rightJoin($table, $foreignKey = NULL);
 
-    public function groupBy(array $columns);
+    public function groupBy(array $columns): GroupBy;
 
     /**
      * @param int $page

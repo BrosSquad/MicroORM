@@ -3,20 +3,29 @@ namespace Dusan\PhpMvc\Tests\Database;
 
 use Dusan\PhpMvc\Database\Driver;
 use Dusan\PhpMvc\Database\Drivers\MySqlDatabase;
+use Exception;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class DatabaseTest extends TestCase
 {
     protected $dbConfiguration;
+    protected $driver;
+    /**
+     * @before
+     */
+    public function getInstanceOfMySqlDatabase() {
+        $pdo = new PDO('mysql:dbname=cpack_dev;host=localhost;charset=utf8', 'dusan', 'Pa$$w0rd');
+        $this->driver = new MySqlDatabase($pdo);
+    }
 
     public function testDatabaseConnection()
     {
         try {
-            $database = $this->container->get(MySqlDatabase::class);
-            $this->assertNotNull($database);
-            $this->assertInstanceOf(Driver::class, $database);
-            $this->assertInstanceOf(MySqlDatabase::class, $database);
-        } catch (\Exception $e) {
+            $this->assertNotNull($this->driver);
+            $this->assertInstanceOf(Driver::class, $this->driver);
+            $this->assertInstanceOf(MySqlDatabase::class, $this->driver);
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
     }
