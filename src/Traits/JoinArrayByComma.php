@@ -7,7 +7,7 @@ trait JoinArrayByComma
 {
     /**
      * Joins the array with ',' and trims the last ',' from the string
-     * @see DatabaseModel::find()
+     * @see DatabaseModelOLD::find()
      * @param array $arr array to be joined by ','
      * @return string
      */

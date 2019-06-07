@@ -1,9 +1,9 @@
 <?php
 
 use Dusan\PhpMvc\Database\CustomUpdate;
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 
-class User extends Model implements CustomUpdate
+class User extends ModelOLD implements CustomUpdate
 {
     protected $name;
     protected $surname;

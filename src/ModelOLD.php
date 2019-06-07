@@ -11,7 +11,7 @@ use Dusan\PhpMvc\Database\FluentApi\FluentInterface;
 use Dusan\PhpMvc\Database\Relations\BelongsTo;
 use Dusan\PhpMvc\Database\Relations\HasMany;
 
-abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
+abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, BelongsToInterface
 {
     /**
      * @param string $table
@@ -76,7 +76,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
 
     /**
      * @api
-     * @see \Dusan\PhpMvc\Database\Model::query()
+     * @see \Dusan\PhpMvc\Database\ModelOLD::query()
      * @return \Dusan\PhpMvc\Database\FluentApi\AdvancedFluentInterface
      */
     protected function fluent(): AdvancedFluentInterface {
@@ -98,7 +98,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @example "../../docs/Database/find.php"
      * @return static|null If there is no record in database null is returned
      */
-    protected function find($id, $select = ['*']): ?Model
+    protected function find($id, $select = ['*']): ?ModelOLD
     {
         $data = static::$database
             ->sql($this->doSelect($select))

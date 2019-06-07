@@ -4,9 +4,9 @@ namespace Dusan\PhpMvc\Database\Drivers;
 
 use Closure;
 use Dusan\PhpMvc\Database\BindToDatabase;
-use Dusan\PhpMvc\Database\DatabaseModel;
+use Dusan\PhpMvc\Database\DatabaseModelOLD;
 use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 use Dusan\PhpMvc\Database\Traits\MemberWithDash;
 use PDO;
 use PDOException;
@@ -120,7 +120,7 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    public final function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver
+    public final function bindToObject(DatabaseModelOLD $model, array $bindings, $memberBind = []): Driver
     {
         if (!is_array($bindings) || !is_array($memberBind)) {
             throw new TypeError('$bindings and $memberBind variables must be arrays');
@@ -276,7 +276,7 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    private function mapping(Model & $model, array & $mappings)
+    private function mapping(ModelOLD & $model, array & $mappings)
     {
         return $model->lock(function () use ($model, $mappings) {
             foreach ($mappings as $key => $value) {
@@ -296,7 +296,7 @@ final class MySqlDatabase implements Driver
             function (PDOStatement $statement) {
                 $newObjects = [];
                 while (($obj = $statement->fetch(static::$fetchMode)) !== NULL) {
-                    /** @var Model $instance */
+                    /** @var ModelOLD $instance */
                     $instance = new $this->className();
                     $mappings = (array)$obj;
                     $newObjects = $this->mapping($instance, $mappings);

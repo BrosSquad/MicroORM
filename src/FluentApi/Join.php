@@ -3,12 +3,12 @@
 namespace Dusan\PhpMvc\Database\FluentApi;
 
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 
 class Join extends Fluent implements JoinInterface
 {
     public function __construct(
-        Model& $model,
+        ModelOLD& $model,
         string $select,
         string $join,
         string $where,

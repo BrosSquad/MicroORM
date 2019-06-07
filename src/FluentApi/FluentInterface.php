@@ -8,7 +8,7 @@ use Dusan\PhpMvc\Database\Driver;
 /**
  * Class Fluent
  * Simple SQL Generation tool with Fluent API Design Pattern
- * Fluent is activated by calling the query() method on DatabaseModel class
+ * Fluent is activated by calling the query() method on DatabaseModelOLD class
  * It supports INNER,LEFT and RIGHT Sql Joins, complex WHERE Statements, ORDER BY,
  * GROUP BY
  * Mysql syntax is only supported

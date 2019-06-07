@@ -2,7 +2,7 @@
 
 namespace Dusan\PhpMvc\Database\FluentApi;
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 use stdClass;
 
 class Where extends Fluent
@@ -10,7 +10,7 @@ class Where extends Fluent
     protected $sql;
 
     public function __construct(
-        Model& $model,
+        ModelOLD& $model,
         string $select,
         string $join,
         string $where,

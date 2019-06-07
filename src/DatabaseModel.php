@@ -1,92 +1,41 @@
 <?php
+declare(strict_types=1);
 
 namespace Dusan\PhpMvc\Database;
 
-use Dusan\PhpMvc\Database\Traits\DateTimeParse;
-use Dusan\PhpMvc\Database\Traits\Delete;
-use Dusan\PhpMvc\Database\Traits\Diff;
-use Dusan\PhpMvc\Database\Traits\Insert;
-use Dusan\PhpMvc\Database\Traits\Lockable;
-use Dusan\PhpMvc\Database\Traits\ObjectVariables;
-use Dusan\PhpMvc\Database\Traits\Save;
-use Dusan\PhpMvc\Database\Traits\Update;
+use Dusan\PhpMvc\Database\Exceptions\MethodNotFound;
+use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
+use Dusan\PhpMvc\Database\FluentApi\Fluent;
 use Exception;
 use JsonSerializable;
-use Dusan\PhpMvc\Database\FluentApi\Fluent;
-use Dusan\PhpMvc\Database\Traits\GetDateTime;
-use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
 use Psr\Container\ContainerInterface;
 use Serializable;
 
-/**
- * Abstract DatabaseModel class represents model that is in database
- * Each model that wants to represent table in database must inherit this abstract class
- * it makes use of Fluent api and automatic sql generation for ease of use
- *
- * @package Dusan\PhpMvc\Database
- * @author  Dusan Malusev <dusan.998@outlook.com>
- * @version 2.0
- * @license GPL Version 2
- * @uses    Fluent,JsonSerializable, Driver
- * @method setUpdate()
- * @method setUpdateBindings()
- * @method setInsert()
- * @method setInsertBindings()
- */
-abstract class DatabaseModel extends AbstractModel implements JsonSerializable, PdoConstants, Serializable
+class DatabaseModel extends AbstractModel implements Serializable, JsonSerializable
 {
-    use Diff;
-    use GetDateTime;
-    use ObjectVariables;
-    use JoinArrayByComma;
-    use DateTimeParse;
-    use Insert;
-    use Update;
-    use Delete;
-    use Lockable;
-    use Save;
     /**
-     * @var ContainerInterface
+     * @var \Dusan\PhpMvc\Database\Driver
+     */
+    protected static $driver;
+
+    /**
+     * @var \Psr\Container\ContainerInterface
      */
     private static $container;
-
-    protected static $fields = [];
-
-    private $lock = false;
-
-    /**
-     * @var null|string
-     */
-    protected static $observer = null;
-
-    /**
-     * @var null|\Dusan\PhpMvc\Database\Events\Observer
-     */
-    private static $observerInstance = null;
 
     /**
      * Name of column in database for primary key
      *
-     * @source
      * @var string
      */
-    protected $primaryKey = 'id';
-
-    /**
-     * Primary key field in database
-     *
-     * @api
-     * @source
-     * @var null|int|string
-     */
-    protected $id = NULL;
+    protected static $primaryKey = 'id';
 
     /**
      * Alias for the table
      *
      * @var string
      */
-    protected $alias = '';
+    protected static $tableAlias = '';
 
     /**
      * Name of the table in the database
@@ -94,133 +43,168 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      * modified by setTable() method
      *
      * @var string
-     * @source
-     * @internal
      */
-    protected $table = '';
-
-    /**
-     * Protected array protects data in the model,
-     * this array is empty by default which indicated every property
-     * is available for insert update statements
-     * if you want to protect field put it in this array
-     * @api
-     * @var array
-     */
-    protected $protected = [];
-
-    protected $fillable = [];
-    /**
-     * When member of class is accessed
-     * name of the member is added to $changed
-     * for later use with insert() and update() methods
-     * <b>Tracks changed for update statement</b>
-     * @internal
-     * @source
-     * @var array
-     */
-    protected $changed = [];
-
-    /**
-     * Bindings of the fields in class with PDO type parameters for better protection
-     * Key of the array must be string with name of the field which will have the PDO::PARAM_*
-     * Value must be PDO::PARAM_* ->
-     * For ease of use Database model will reference these parameters without PDO::PARAM_*
-     *
-     * @api
-     * @var array
-     */
-    protected $memberTypeBindings = [];
+    protected static $table = '';
 
     /**
      * Guarded array restricts the Json serializes from showing
      * it as output
      * <b>Serialization</b>
-     * @example "../../docs/Database/restricted.php"
+     *
      * @var array
      */
-    protected $guarded = [];
+    protected static $guarded = [];
 
     /**
-     * Underling database driver
+     * When member of class is accessed
+     * name of the member is added to $changed
+     * for later use with insert() and update() methods
+     * <b>Tracks changed for update statement</b>
      *
-     * @var Driver
+     * @internal
+     * @source
+     * @var array
      */
-    protected static $database;
+    private $changed = [];
 
     /**
-     * Setting the database driver
+     * Protected array protects data in the model,
+     * this array is empty by default which indicated every property
+     * is available for insert and update statements
+     * if you want to protect field put it in this array
      *
-     * @param Driver $database
-     *
-     * @return void
+     * @api
+     * @var array
      */
-    private static function setDatabase(Driver $database)
+    protected static $protected = [];
+
+    /**
+     * @var bool
+     */
+    private $lock = false;
+
+    public function __construct(array $properties)
     {
-        self::$database = $database;
-    }
-
-    /**
-     * Setting the IoC Container
-     *
-     * @param \Psr\Container\ContainerInterface $container
-     */
-    private static function setContainer(ContainerInterface $container)
-    {
-        self::$container = $container;
-    }
-
-    /**
-     * DatabaseModel constructor.
-     *
-     * @param array $properties
-     */
-    public function __construct(?array $properties = NULL)
-    {
-        $this->table = $this->setTable();
-        if(static::$fields === NULL) {
-            static::$fields = $this->getVariables();
-        }
-        $this->protected();
-
-        $this->exclude();
-        $this->protected = array_flip($this->protected);
-        $this->guarded = array_flip($this->guarded);
-
-        if(static::$observer === null) {
-            static::$observer = $this->setObserver();
-        }
-        if (static::$observer !== null) {
-            static::$observerInstance = static::$container->get(static::$observer);
-        }
-        if($properties !== null) {
+        if ($properties !== NULL) {
             foreach ($properties as $name => $value) {
                 $this->{$name} = $value;
             }
         }
-
     }
 
     /**
-     * Gets table name
-     *
-     * @api
-     * @return string
-     */
-    public function getTable(): string
-    {
-        return $this->table;
-    }
-
-    /**
+     * {@inheritDoc}
      * @param string $name
-     *
-     * @return mixed
-     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
+     * @param mixed  $value
      */
-    public function __get(string $name)
+    public function __set(string $name, $value)
     {
-        return parent::__get($name);
+        if (property_exists($this, $name)) {
+            parent::__set($name, $value);
+            $this->hasChanged($name);
+        } else {
+            throw new PropertyNotFound('Property ' . $name . ' is not found');
+        }
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (strcmp($name, 'testInsert') === 0) {
+            return $this->insert();
+        } else if (strcmp($name, 'testUpdate') === 0) {
+            return $this->update();
+        }
+        throw new MethodNotFound('Method with name ' . $name . ' is not found');
+    }
+
+    private static function guardedFields()
+    {
+        self::$guarded[] = 'changed';
+    }
+
+    private static function protectedFields()
+    {
+        self::$protected[] = 'changed';
+    }
+
+    protected static function setContainer(ContainerInterface $container)
+    {
+        self::$container = $container;
+    }
+
+    protected static function setTable(): string
+    {
+        return end(explode('\\', get_called_class())) . 's';
+    }
+
+    public static function getTable(): string
+    {
+        return self::$table;
+    }
+
+    protected static function setDatabaseDriver(Driver $driver)
+    {
+        self::guardedFields();
+        self::protectedFields();
+        self::$driver = $driver;
+
+        self::$guarded = array_flip(self::$guarded);
+        self::$protected = array_flip(self::$protected);
+    }
+
+
+    /**
+     * Making some function that are not static
+     * to be statically called
+     *
+     * @param $name
+     * @param $arguments
+     *
+     * @return DatabaseModelOLD|Fluent|null|void
+     * @throws \Exception
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        switch ($name) {
+            case 'setDatabaseDriver':
+                self::setDatabaseDriver($arguments[0]);
+                break;
+            case 'setContainer':
+                self::setContainer($arguments[0]);
+                break;
+            default:
+                throw new Exception('Method is not found');
+        }
+    }
+
+
+    /**
+     * String representation of object
+     *
+     * @link  https://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize($this->jsonSerialize());
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @link  https://php.net/manual/en/serializable.unserialize.php
+     *
+     * @param string $serialized <p>
+     *                           The string representation of the object.
+     *                           </p>
+     *
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        // TODO: Implement unserialize() method.
     }
 
     /**
@@ -233,191 +217,74 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
      */
     public function jsonSerialize()
     {
-        return $this->excluded();
-    }
-
-    /**
-     * Setter function
-     *
-     * @param string $name
-     * @param        $value
-     *
-     * @internal
-     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
-     */
-    public function __set($name, $value)
-    {
-        if (property_exists($this, $name)) {
-            if ($name === $this->primaryKey) {
-                $this->setId($value);
-            } else {
-                parent::__set($name, $value);
+        $arr = [];
+        foreach($this->getVariables() as $variable) {
+            if(!isset(static::$guarded[$variable])) {
+                $arr[$variable] = $this->{$variable};
             }
-            $this->hasChanged($name);
         }
+        return $arr;
     }
 
-    /**
-     * Adding the members of class to restricted array
-     * @internal
-     * @return void
-     */
-    protected function protected()
+
+    public function saveOrFail()
     {
-        $this->protected[] = 'guarded';
-        $this->protected[] = 'table';
-        $this->protected[] = 'database';
-        $this->protected[] = 'protected';
-        $this->protected[] = 'restricted';
-        $this->protected[] = 'fillable';
-        $this->protected[] = 'changed';
-        $this->protected[] = 'memberTypeBindings';
-        $this->protected[] = 'alias';
-        $this->protected[] = 'primaryKey';
-        $this->protected[] = 'id';
-        $this->protected[] = 'format';
-        $this->protected[] = 'lock';
+
     }
 
-
-    /**
-     * Adding the member of class that will be excluded
-     * in serialization and json encoding
-     * @internal
-     * @return void
-     */
-    protected function exclude(): void
+    public function save()
     {
-        $this->guarded[] = 'guarded';
-        $this->guarded[] = 'table';
-        $this->guarded[] = 'database';
-        $this->guarded[] = 'guarded';
-        $this->guarded[] = 'fillable';
-        $this->guarded[] = 'changed';
-        $this->guarded[] = 'memberTypeBindings';
-        $this->guarded[] = 'alias';
-        $this->guarded[] = 'primaryKey';
-        $this->guarded[] = 'format';
-        $this->guarded[] = 'protected';
-        $this->guarded[] = 'lock';
+
     }
 
     /**
-     * Excluding the variable in serialization
-     * @internal
      * @return array
      */
-    protected function excluded(): array
+    protected function getVariables(): array
     {
-        $returnArr = [];
-        foreach(static::$fields as $item)
-        {
-            $value = $this->guarded[$item];
-            if(!isset($value)) {
-                $returnArr[$item] = $value;
-            }
-        }
-        return $returnArr;
+        return get_object_vars($this);
     }
 
-    /**
-     * Returns the value of the primary key from database
-     * @api
-     * @return int|string|null
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Gets alias for the table
-     * @api
-     * @return string
-     */
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * Sets the values of the primary key
-     * <b> If you want setId to record the changed on the id override it on child class</b>
-     * @api
-     * @param int|string $id
-     */
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * Making some function that are not static
-     * to be statically called
-     *
-     * @param $name
-     * @param $arguments
-     *
-     * @return DatabaseModel|Fluent|null|void
-     * @throws \Exception
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        switch ($name) {
-            case 'setDatabase':
-                if (!$arguments[0] instanceof Driver) {
-                    throw new Exception('Argument must be instance of Database Driver');
-                }
-                self::setDatabase($arguments[0]);
-                break;
-            case 'setContainer':
-                if (!$arguments[0] instanceof ContainerInterface) {
-                    throw new Exception('Argument must be instance of PSR Container');
-                }
-                self::setContainer($arguments[0]);
-                break;
-            default:
-                throw new Exception('Method is not found');
-        }
-    }
-
-    /**
-     * Optional value for setters
-     * e.g This method is used to indicate that the value of a property has changed
-     * use this when you want to use getters and setters instead of properties it self
-     * when getting or setting the properties the change is automatically recorded
-     *
-     * @param string $name     name of the property that will be changed
-     * @param null   $bindName custom bind name
-     */
-    protected function hasChanged($name, $bindName = NULL)
+    public function hasChanged($name, $bindName = NULL)
     {
         if (!$this->lock) {
-            $binding = is_null($bindName) ? $name : $bindName;
+            $binding = $bindName ?? $name;
             $this->changed[$name] = ':' . $binding;
         }
     }
 
+
+    // SQL Statements
+
     /**
-     * @inheritdoc
+     * Generated the insert sql statement with values that are added in $fillable array
      *
-     * @param $name
-     * @param $arguments
-     *
+     * @internal
      * @return string
-     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
      */
-    public function __call($name, $arguments)
+    protected final function insert(): string
     {
-        if (strcmp($name, 'testInsert') === 0) {
-            return $this->insert();
-        } else if (strcmp($name, 'testUpdate') === 0) {
-            return $this->update();
-        } else if (preg_match("/^set([A-Z0-9]+[A-Za-z0-9]+)$/suD", $name, $matches) && count($arguments) === 1) {
-            $newString = $this->snakeCase($matches[0]);
-            $this->__set($newString, $arguments[0]);
+        if (count($this->fillable) === 0) {
+            $insert = [];
+            $variables = $this->getVariables();
+            foreach ($variables as $item => $value) {
+                if (!key_exists($item, $this->protected)) {
+                    $insert[] = $item;
+                }
+            }
+        } else {
+            $insert = $this->fillable;
         }
-        return NULL;
+
+        $sql = 'INSERT INTO ' . $this->getTable() . '(' . join(',', $insert) . ') VALUES (' .
+            array_reduce($insert, function ($total, $item) {
+                if (empty($total)) {
+                    return ':' . $item;
+                } else {
+                    return $total . ',:' . $item;
+                }
+            }, '');
+        return $sql . ')';
     }
 
     /**
@@ -444,43 +311,4 @@ abstract class DatabaseModel extends AbstractModel implements JsonSerializable, 
         return $newString;
     }
 
-    /**
-     * Override the default value of the table
-     * Default value for the table name is __CLASS__ + 's'
-     * Sometimes this approach is not good so override when the naming convention
-     * is not valid eg. Library -> Librarys (should be Libraries)
-     * String must be returned because this value is used in later processing by the framework
-     *
-     * @api
-     * @return string
-     */
-    protected function setTable(): string
-    {
-        $exp = explode('\\', $this->getClass());
-        return strtolower($exp[count($exp) - 1]) . 's';
-    }
-
-    /**
-     * @return string|void
-     */
-    public function serialize()
-    {
-        return serialize($this->jsonSerialize());
-    }
-
-    /**
-     * @param string $serialized
-     */
-    public function unserialize($serialized)
-    {
-        $unserialized = unserialize($serialized);
-        foreach ($unserialized as $member => $value) {
-            $this->{$member} = $value;
-        }
-    }
-
-    protected static function setObserver(): ?string
-    {
-        return null;
-    }
 }

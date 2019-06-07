@@ -3,7 +3,7 @@
 namespace Dusan\PhpMvc\Database\FluentApi;
 
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 use stdClass;
 
 class GroupBy extends Fluent
@@ -11,7 +11,7 @@ class GroupBy extends Fluent
     protected $sql;
 
     public function __construct(
-        Model& $model,
+        ModelOLD& $model,
         string $select,
         string $join,
         string $where,

@@ -20,7 +20,7 @@ trait Save
      *
      * @api
      * @throws \PDOException
-     * @see DatabaseModel::save()
+     * @see DatabaseModelOLD::save()
      * @return void
      */
     public final function saveOrFail(): void
@@ -106,7 +106,7 @@ trait Save
      * On successful insert/update <b>true</b> is returned from this method and on failure <b>false</b> is returned
      *
      * @api
-     * @see DatabaseModel::saveOrFail()
+     * @see DatabaseModelOLD::saveOrFail()
      * @return bool
      */
     public final function save()

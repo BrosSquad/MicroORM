@@ -21,10 +21,12 @@
     }
   },
   "require": {
+    "php": ">=7.3.0",
     "psr/container": "^1.0",
     "dusan/php-mvc-collections": "^1.0",
     "ext-pdo": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-mbstring": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "8.1.*"

@@ -4,7 +4,7 @@ namespace Dusan\PhpMvc\Database;
 
 /**
  * Interface CustomUpdate
- * This interface should be applied to Model subclasses,
+ * This interface should be applied to ModelOLD subclasses,
  * it will indicate to the that developer wants custom
  * update statement for the model
  *

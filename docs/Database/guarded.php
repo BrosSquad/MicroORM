@@ -1,8 +1,8 @@
 <?php
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 
-class User extends Model
+class User extends ModelOLD
 {
     protected $guarded = [
         'password' // Password will be excluded when User model is serialized in json

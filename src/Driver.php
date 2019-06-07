@@ -46,20 +46,20 @@ interface Driver
     public function binding(array $bindings): Driver;
 
     /**
-     * Bind the parameters to prepared statement with DatabaseModel and its bindings
+     * Bind the parameters to prepared statement with DatabaseModelOLD and its bindings
      * Dynamically loads properties on the object
      * Every property must be the key in bindings array, and the value is the bound parameter in prepared statement
      * This method bind values from the object by the reference so it allows last minute changes
      * Actual parameters are bound when the execute method is called on the Database object
      *
-     * @param \Dusan\PhpMvc\Database\DatabaseModel $model
-     * @param array                                $bindings
-     * @param int[]                                $memberBind
+     * @param \Dusan\PhpMvc\Database\DatabaseModelOLD $model
+     * @param array                                   $bindings
+     * @param int[]                                   $memberBind
      *
      * @throws TypeError
      * @return $this
      */
-    public function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver;
+    public function bindToObject(DatabaseModelOLD $model, array $bindings, $memberBind = []): Driver;
 
     /**
      * Binds to the reference of the $value

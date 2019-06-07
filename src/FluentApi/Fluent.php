@@ -4,7 +4,7 @@ namespace Dusan\PhpMvc\Database\FluentApi;
 
 use Dusan\PhpMvc\Collections\Collection;
 use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\Model;
+use Dusan\PhpMvc\Database\ModelOLD;
 use Dusan\PhpMvc\Database\PdoConstants;
 use Dusan\PhpMvc\Database\Relations\Relation;
 use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
@@ -12,14 +12,14 @@ use stdClass;
 
 /**
  * Simple SQL Generation tool with Fluent API Design Pattern
- * Fluent is activated by calling the query() method on DatabaseModel class
+ * Fluent is activated by calling the query() method on DatabaseModelOLD class
  * It supports INNER,LEFT and RIGHT Sql Joins, complex WHERE Statements, ORDER BY,
  * GROUP BY
  * Mysql syntax is only supported
  *
  * @package Dusan\PhpMvc\Database\FluentApi
  * @author  Dusan Malusev
- * @see     \Dusan\PhpMvc\Database\DatabaseModel
+ * @see     \Dusan\PhpMvc\Database\DatabaseModelOLD
  * @version 2.0
  */
 class Fluent implements PdoConstants, FluentInterface
@@ -97,7 +97,7 @@ class Fluent implements PdoConstants, FluentInterface
     protected $bindings = [];
 
     /**
-     * @var Model
+     * @var ModelOLD
      */
     protected $model;
 
@@ -116,12 +116,12 @@ class Fluent implements PdoConstants, FluentInterface
     /**
      * Fluent constructor.
      *
-     * @param Model  $model
-     * @param string $class
-     * @param array  $typeBindings
+     * @param ModelOLD $model
+     * @param string   $class
+     * @param array    $typeBindings
      */
     public function __construct(
-        Model & $model,
+        ModelOLD & $model,
         string $class = stdClass::class,
         array & $typeBindings = []
     )
