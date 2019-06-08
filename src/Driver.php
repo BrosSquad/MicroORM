@@ -52,14 +52,13 @@ interface Driver
      * This method bind values from the object by the reference so it allows last minute changes
      * Actual parameters are bound when the execute method is called on the Database object
      *
-     * @param \Dusan\PhpMvc\Database\DatabaseModelOLD $model
-     * @param array                                   $bindings
-     * @param int[]                                   $memberBind
+     * @param \Dusan\PhpMvc\Database\DatabaseModel $model
+     * @param array                                $bindings
+     * @param int[]                                $memberBind
      *
-     * @throws TypeError
      * @return $this
      */
-    public function bindToObject(DatabaseModelOLD $model, array $bindings, $memberBind = []): Driver;
+    public function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver;
 
     /**
      * Binds to the reference of the $value

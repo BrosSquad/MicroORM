@@ -4,7 +4,7 @@ namespace Dusan\PhpMvc\Database\Drivers;
 
 use Closure;
 use Dusan\PhpMvc\Database\BindToDatabase;
-use Dusan\PhpMvc\Database\DatabaseModelOLD;
+use Dusan\PhpMvc\Database\DatabaseModel;
 use Dusan\PhpMvc\Database\Driver;
 use Dusan\PhpMvc\Database\Model;
 use Dusan\PhpMvc\Database\Traits\MemberWithDash;
@@ -120,7 +120,7 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    public final function bindToObject(DatabaseModelOLD $model, array $bindings, $memberBind = []): Driver
+    public final function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver
     {
         if (!is_array($bindings) || !is_array($memberBind)) {
             throw new TypeError('$bindings and $memberBind variables must be arrays');

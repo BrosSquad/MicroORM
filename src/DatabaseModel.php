@@ -7,6 +7,7 @@ use Dusan\PhpMvc\Database\Exceptions\MethodNotFound;
 use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
 use Dusan\PhpMvc\Database\FluentApi\Fluent;
 use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
+use Dusan\PhpMvc\Database\Traits\Lockable;
 use Exception;
 use JsonSerializable;
 use PDOException;
@@ -16,6 +17,7 @@ use Serializable;
 class DatabaseModel extends AbstractModel implements Serializable, JsonSerializable
 {
     use JoinArrayByComma;
+    use Lockable;
     /**
      * @var \Dusan\PhpMvc\Database\Driver
      */
