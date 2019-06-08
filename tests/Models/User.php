@@ -1,9 +1,9 @@
 <?php
 
 namespace Dusan\PhpMvc\Tests\Database\Models;
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 
-class User extends ModelOLD
+class User extends Model
 {
     protected $name;
     protected $surname;

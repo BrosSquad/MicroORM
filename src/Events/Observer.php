@@ -3,7 +3,7 @@
 namespace Dusan\PhpMvc\Database\Events;
 
 
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 
 /**
  * Interface Observer
@@ -33,25 +33,25 @@ interface Observer
     /**
      * This method runs when model is already inserted
      *
-     * @param ModelOLD $model
+     * @param Model $model
      */
-    public function created(ModelOLD $model): void;
+    public function created(Model $model): void;
 
     /**
      * This method runs when model is already updated
      *
-     * @param \Dusan\PhpMvc\Database\ModelOLD $model
+     * @param \Dusan\PhpMvc\Database\Model $model
      *
      * @return void
      */
-    public function updated(ModelOLD $model): void;
+    public function updated(Model $model): void;
 
     /**
      * This method runs when model is already deleted
      *
-     * @param \Dusan\PhpMvc\Database\ModelOLD $model
+     * @param \Dusan\PhpMvc\Database\Model $model
      *
      * @return void
      */
-    public function deleted(ModelOLD $model): void;
+    public function deleted(Model $model): void;
 }

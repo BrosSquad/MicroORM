@@ -11,7 +11,7 @@ use Dusan\PhpMvc\Database\FluentApi\FluentInterface;
 use Dusan\PhpMvc\Database\Relations\BelongsTo;
 use Dusan\PhpMvc\Database\Relations\HasMany;
 
-abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, BelongsToInterface
+abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
 {
     /**
      * @param string $table
@@ -21,7 +21,7 @@ abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, Be
      */
     public final function hashMany(string $table, string $foreignKey): HasMany
     {
-        return new HasMany($this->getTable(), $this->primaryKey, $table, $foreignKey);
+        return new HasMany($this->getTable(), self::$primaryKey, $table, $foreignKey);
     }
 
     /**
@@ -32,7 +32,7 @@ abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, Be
      */
     public final function belongsTo(string $table, string $foreignKey): BelongsTo
     {
-        return new BelongsTo($this->getTable(), $this->primaryKey, $table, $foreignKey);
+        return new BelongsTo($this->getTable(), self::$primaryKey, $table, $foreignKey);
     }
 
     /**
@@ -69,21 +69,19 @@ abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, Be
     {
         return new Fluent(
             $this,
-            $this->getClass(),
-            $this->memberTypeBindings
+            $this->getClass()
         );
     }
 
     /**
      * @api
-     * @see \Dusan\PhpMvc\Database\ModelOLD::query()
+     * @see \Dusan\PhpMvc\Database\Model::query()
      * @return \Dusan\PhpMvc\Database\FluentApi\AdvancedFluentInterface
      */
     protected function fluent(): AdvancedFluentInterface {
         return new AdvancedFluent(
             $this,
-            $this->getClass(),
-            $this->memberTypeBindings
+            $this->getClass()
         );
     }
 
@@ -98,11 +96,11 @@ abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, Be
      * @example "../../docs/Database/find.php"
      * @return static|null If there is no record in database null is returned
      */
-    protected function find($id, $select = ['*']): ?ModelOLD
+    protected function find($id, $select = ['*']): ?Model
     {
-        $data = static::$database
+        $data = static::$driver
             ->sql($this->doSelect($select))
-            ->bindParam(':' . $this->primaryKey, $id)
+            ->bindParam(':' . self::$primaryKey, $id)
             ->bindToClass($this->getClass())
             ->execute();
         if (count($data) === 1) {
@@ -113,8 +111,9 @@ abstract class ModelOLD extends DatabaseModelOLD implements HasManyInterface, Be
 
     private function doSelect($select): string
     {
+        $key = self::$primaryKey;
         return 'SELECT ' . $this->joinArrayByComma($select) .
             ' FROM ' . $this->getTable() .
-            " WHERE {$this->primaryKey}=:id LIMIT 1";
+            " WHERE {$key}=:id LIMIT 1";
     }
 }

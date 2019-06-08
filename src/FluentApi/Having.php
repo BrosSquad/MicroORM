@@ -3,7 +3,7 @@
 namespace Dusan\PhpMvc\Database\FluentApi;
 
 
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 use stdClass;
 
 class Having extends Fluent
@@ -14,7 +14,7 @@ class Having extends Fluent
     protected $having = '';
 
     public function __construct(
-        ModelOLD& $model,
+        Model& $model,
         string $having,
         string $select,
         string $join,
@@ -23,11 +23,10 @@ class Having extends Fluent
         string $orderBy,
         string $groupBy,
         string $class = stdClass::class,
-        array& $typeBindings = [],
         array& $bindings = []
     )
     {
-        parent::__construct($model, $class, $typeBindings);
+        parent::__construct($model, $class);
         $this->select = $select;
         $this->join = $join;
         $this->where = $where;

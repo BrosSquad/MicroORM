@@ -4,7 +4,7 @@ namespace Dusan\PhpMvc\Database\FluentApi;
 
 use Dusan\PhpMvc\Collections\Collection;
 use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 use Dusan\PhpMvc\Database\PdoConstants;
 use Dusan\PhpMvc\Database\Relations\Relation;
 use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
@@ -97,14 +97,10 @@ class Fluent implements PdoConstants, FluentInterface
     protected $bindings = [];
 
     /**
-     * @var ModelOLD
+     * @var Model
      */
     protected $model;
 
-    /**
-     * @var array
-     */
-    protected $typeBindings;
 
     /**
      * @var null|array|Collection
@@ -116,14 +112,12 @@ class Fluent implements PdoConstants, FluentInterface
     /**
      * Fluent constructor.
      *
-     * @param ModelOLD $model
-     * @param string   $class
-     * @param array    $typeBindings
+     * @param Model  $model
+     * @param string $class
      */
     public function __construct(
-        ModelOLD & $model,
-        string $class = stdClass::class,
-        array & $typeBindings = []
+        Model & $model,
+        string $class = stdClass::class
     )
     {
         $this->model = &$model;
@@ -131,7 +125,6 @@ class Fluent implements PdoConstants, FluentInterface
         $this->select = 'SELECT * FROM ' . $this->table;
         $this->sql = 'SELECT * FROM ' . $model->getTable();
         $this->bind = $class;
-        $this->typeBindings = &$typeBindings;
     }
 
 
@@ -244,7 +237,6 @@ class Fluent implements PdoConstants, FluentInterface
             $this->orderBy,
             $this->groupBy,
             $this->bind,
-            $this->typeBindings,
             $this->bindings
         );
     }
@@ -339,7 +331,6 @@ class Fluent implements PdoConstants, FluentInterface
             $this->orderBy,
             $this->groupBy,
             $this->bind,
-            $this->typeBindings,
             $this->bindings
         );
     }

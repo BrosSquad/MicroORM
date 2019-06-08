@@ -6,7 +6,7 @@ use Closure;
 use Dusan\PhpMvc\Database\BindToDatabase;
 use Dusan\PhpMvc\Database\DatabaseModelOLD;
 use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 use Dusan\PhpMvc\Database\Traits\MemberWithDash;
 use PDO;
 use PDOException;
@@ -276,7 +276,7 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    private function mapping(ModelOLD & $model, array & $mappings)
+    private function mapping(Model & $model, array & $mappings)
     {
         return $model->lock(function () use ($model, $mappings) {
             foreach ($mappings as $key => $value) {
@@ -296,7 +296,7 @@ final class MySqlDatabase implements Driver
             function (PDOStatement $statement) {
                 $newObjects = [];
                 while (($obj = $statement->fetch(static::$fetchMode)) !== NULL) {
-                    /** @var ModelOLD $instance */
+                    /** @var Model $instance */
                     $instance = new $this->className();
                     $mappings = (array)$obj;
                     $newObjects = $this->mapping($instance, $mappings);

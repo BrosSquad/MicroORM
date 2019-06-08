@@ -5,7 +5,7 @@ namespace Dusan\PhpMvc\Database;
 
 /**
  * Interface CustomInsert
- * This interface should be applied to ModelOLD subclasses,
+ * This interface should be applied to Model subclasses,
  * it will indicate to the that developer wants custom insert statement for the
  * model
  *

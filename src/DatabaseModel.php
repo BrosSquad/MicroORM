@@ -6,13 +6,16 @@ namespace Dusan\PhpMvc\Database;
 use Dusan\PhpMvc\Database\Exceptions\MethodNotFound;
 use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
 use Dusan\PhpMvc\Database\FluentApi\Fluent;
+use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
 use Exception;
 use JsonSerializable;
+use PDOException;
 use Psr\Container\ContainerInterface;
 use Serializable;
 
 class DatabaseModel extends AbstractModel implements Serializable, JsonSerializable
 {
+    use JoinArrayByComma;
     /**
      * @var \Dusan\PhpMvc\Database\Driver
      */
@@ -83,7 +86,7 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      */
     private $lock = false;
 
-    public function __construct(array $properties)
+    public function __construct(array $properties = [])
     {
         if ($properties !== NULL) {
             foreach ($properties as $name => $value) {
@@ -218,8 +221,8 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
     public function jsonSerialize()
     {
         $arr = [];
-        foreach($this->getVariables() as $variable) {
-            if(!isset(static::$guarded[$variable])) {
+        foreach ($this->getVariables() as $variable) {
+            if (!isset(static::$guarded[$variable])) {
                 $arr[$variable] = $this->{$variable};
             }
         }
@@ -227,14 +230,56 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
     }
 
 
+    /**
+     * TODO: Support for UUIDs and other types not just INTEGERS
+     */
     public function saveOrFail()
     {
+        $lastId = self::$driver->transaction(function (Driver $driver) {
+            // Update statement
+            if (isset($this->{self::$primaryKey})) {
+                if ($this instanceof CustomUpdate) {
+                    $sql = $this->setUpdate();
+                    $bindings = $this->setUpdateBindings();
+                } else {
+                    $sql = $this->update();
+                    $bindings = array_unique($this->changed);
+                    $bindings[self::$primaryKey] = ':' . self::$primaryKey;
+                }
+            } // Insert statement
+            else {
+                if ($this instanceof CustomInsert) {
+                    $sql = $this->setInsert();
+                    $bindings = $this->setInsertBindings();
+                } else {
+                    $bindings = [];
+                    $sql = $this->insert();
+                    foreach ($this->getVariables() as $variable) {
+                        if (!isset(self::$protected[$variable])) {
+                            $bindings[$variable] = ':' . $variable;
+                        }
+                    }
+                }
+            }
+            $driver->sql($sql);
+            foreach($bindings as $member => $binding) {
+                $driver->bindValue($binding, $this->__get($member));
+            }
+            return $driver->getLastInsertedId();
+        });
 
+        if(isset($lastId) && $lastId > 0) {
+            $this->{self::$primaryKey} = $lastId;
+        }
     }
 
-    public function save()
+    public function save(): bool
     {
+        try {
 
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
     /**
@@ -288,6 +333,25 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
     }
 
     /**
+     * Generated the sql update statement from the $changed array
+     * and bindings for these elements
+     *
+     * @internal
+     * @return string
+     */
+    protected final function update(): string
+    {
+        $sql = 'UPDATE ' . $this->getTable() . ' SET ';
+        foreach ($this->changed as $change => $value) {
+            $sql .= " {$change}={$value},";
+        }
+        $sql = rtrim($sql, ',');
+
+        $sql .= ' WHERE ' . static::$primaryKey . '=:' . static::$primaryKey;
+        return $sql;
+    }
+
+    /**
      * Transforms string from camelcase to snake case
      *
      * @param string $str
@@ -311,4 +375,12 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
         return $newString;
     }
 
+
+    public function getAlias(): string {
+        return static::$tableAlias;
+    }
+
+    public function getClass(): string {
+        return get_called_class();
+    }
 }

@@ -1,9 +1,9 @@
 <?php
 
 use Dusan\PhpMvc\Database\CustomInsert;
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 
-class User extends ModelOLD implements CustomInsert
+class User extends Model implements CustomInsert
 {
     protected $name;
     protected $surname;

@@ -1,8 +1,8 @@
 <?php
 
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 
-class User extends ModelOLD
+class User extends Model
 {
     protected $restricted = [
         'name' // Name will not be included in insert/update sql statements

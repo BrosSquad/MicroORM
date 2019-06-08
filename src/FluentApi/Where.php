@@ -2,7 +2,7 @@
 
 namespace Dusan\PhpMvc\Database\FluentApi;
 
-use Dusan\PhpMvc\Database\ModelOLD;
+use Dusan\PhpMvc\Database\Model;
 use stdClass;
 
 class Where extends Fluent
@@ -10,7 +10,7 @@ class Where extends Fluent
     protected $sql;
 
     public function __construct(
-        ModelOLD& $model,
+        Model& $model,
         string $select,
         string $join,
         string $where,
@@ -18,11 +18,10 @@ class Where extends Fluent
         string $orderBy,
         string $groupBy,
         string $class = stdClass::class,
-        array& $typeBindings = [],
         array& $bindings = []
     )
     {
-        parent::__construct($model, $class, $typeBindings);
+        parent::__construct($model, $class);
         $this->select = $select;
         $this->join = $join;
         $this->where = $where;
