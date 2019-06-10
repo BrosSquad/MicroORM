@@ -18,6 +18,9 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
 {
     use JoinArrayByComma;
     use Lockable;
+
+    private $variables = NULL;
+    private $calledClass = NULL;
     /**
      * @var \Dusan\PhpMvc\Database\Driver
      */
@@ -33,14 +36,14 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      *
      * @var string
      */
-    protected static $primaryKey = 'id';
+    protected $primaryKey = 'id';
 
     /**
      * Alias for the table
      *
      * @var string
      */
-    protected static $tableAlias = '';
+    protected $tableAlias = '';
 
     /**
      * Name of the table in the database
@@ -49,7 +52,7 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      *
      * @var string
      */
-    protected static $table = '';
+    protected $table = '';
 
     /**
      * Guarded array restricts the Json serializes from showing
@@ -58,7 +61,7 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      *
      * @var array
      */
-    protected static $guarded = [];
+    protected $guarded = [];
 
     /**
      * When member of class is accessed
@@ -81,7 +84,7 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      * @api
      * @var array
      */
-    protected static $protected = [];
+    protected $protected = [];
 
     /**
      * @var bool
@@ -90,6 +93,11 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
 
     public function __construct(array $properties = [])
     {
+        $this->table = self::setTable();
+        $this->guardedFields();
+        $this->protectedFields();
+        $this->guarded = array_flip($this->guarded);
+        $this->protected = array_flip($this->protected);
         if ($properties !== NULL) {
             foreach ($properties as $name => $value) {
                 $this->{$name} = $value;
@@ -122,14 +130,30 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
         throw new MethodNotFound('Method with name ' . $name . ' is not found');
     }
 
-    private static function guardedFields()
+    private function guardedFields()
     {
-        self::$guarded[] = 'changed';
+        $this->guarded[] = 'changed';
+        $this->guarded[] = 'lock';
+        $this->guarded[] = 'table';
+        $this->guarded[] = 'variables';
+        $this->guarded[] = 'calledClass';
+        $this->guarded[] = 'tableAlias';
+        $this->guarded[] = 'protected';
+        $this->guarded[] = 'guarded';
+        $this->guarded[] = 'primaryKey';
     }
 
-    private static function protectedFields()
+    private function protectedFields()
     {
-        self::$protected[] = 'changed';
+        $this->protected[] = 'changed';
+        $this->protected[] = 'lock';
+        $this->protected[] = 'table';
+        $this->protected[] = 'variables';
+        $this->protected[] = 'calledClass';
+        $this->protected[] = 'tableAlias';
+        $this->protected[] = 'protected';
+        $this->protected[] = 'guarded';
+        $this->protected[] = 'primaryKey';
     }
 
     protected static function setContainer(ContainerInterface $container)
@@ -139,24 +163,25 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
 
     protected static function setTable(): string
     {
-        return end(explode('\\', get_called_class())) . 's';
+        $splitClass = explode('\\', get_called_class());
+        return mb_strtolower(end($splitClass)) . 's';
     }
 
-    public static function getTable(): string
+    public function getTable(): string
     {
-        return self::$table;
+        return $this->table;
     }
 
     protected static function setDatabaseDriver(Driver $driver)
     {
-        self::guardedFields();
-        self::protectedFields();
         self::$driver = $driver;
-
-        self::$guarded = array_flip(self::$guarded);
-        self::$protected = array_flip(self::$protected);
     }
 
+
+    public function getPrimaryKeyName()
+    {
+        return $this->primaryKey;
+    }
 
     /**
      * Making some function that are not static
@@ -223,9 +248,9 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
     public function jsonSerialize()
     {
         $arr = [];
-        foreach ($this->getVariables() as $variable) {
-            if (!isset(static::$guarded[$variable])) {
-                $arr[$variable] = $this->{$variable};
+        foreach ($this->getVariables() as $name => $value) {
+            if (!isset($this->guarded[$name])) {
+                $arr[$name] = $this->{$name};
             }
         }
         return $arr;
@@ -239,14 +264,14 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
     {
         $lastId = self::$driver->transaction(function (Driver $driver) {
             // Update statement
-            if (isset($this->{self::$primaryKey})) {
+            if (isset($this->{$this->primaryKey})) {
                 if ($this instanceof CustomUpdate) {
                     $sql = $this->setUpdate();
                     $bindings = $this->setUpdateBindings();
                 } else {
                     $sql = $this->update();
-                    $bindings = array_unique($this->changed);
-                    $bindings[self::$primaryKey] = ':' . self::$primaryKey;
+                    $bindings = $this->changed;
+                    $bindings[$this->primaryKey] = ':' . $this->primaryKey;
                 }
             } // Insert statement
             else {
@@ -256,29 +281,31 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
                 } else {
                     $bindings = [];
                     $sql = $this->insert();
-                    foreach ($this->getVariables() as $variable) {
-                        if (!isset(self::$protected[$variable])) {
-                            $bindings[$variable] = ':' . $variable;
+                    foreach ($this->getVariables() as $name => $value) {
+                        if (!isset($this->protected[$name])) {
+                            $bindings[$name] = ':' . $name;
                         }
                     }
                 }
             }
             $driver->sql($sql);
-            foreach($bindings as $member => $binding) {
+            foreach ($bindings as $member => $binding) {
                 $driver->bindValue($binding, $this->__get($member));
             }
+            $driver->execute(NULL, true);
             return $driver->getLastInsertedId();
         });
 
-        if(isset($lastId) && $lastId > 0) {
-            $this->{self::$primaryKey} = $lastId;
+        if (isset($lastId) && $lastId > 0) {
+            $this->{$this->primaryKey} = $lastId;
         }
     }
 
     public function save(): bool
     {
         try {
-
+            $this->saveOrFail();
+            return true;
         } catch (PDOException $e) {
             return false;
         }
@@ -289,10 +316,13 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      */
     protected function getVariables(): array
     {
-        return get_object_vars($this);
+        if ($this->variables === NULL) {
+            $this->variables = get_object_vars($this);
+        }
+        return $this->variables;
     }
 
-    public function hasChanged($name, $bindName = NULL)
+    private function hasChanged($name, $bindName = NULL)
     {
         if (!$this->lock) {
             $binding = $bindName ?? $name;
@@ -311,16 +341,12 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      */
     protected final function insert(): string
     {
-        if (count($this->fillable) === 0) {
-            $insert = [];
-            $variables = $this->getVariables();
-            foreach ($variables as $item => $value) {
-                if (!key_exists($item, $this->protected)) {
-                    $insert[] = $item;
-                }
+        $insert = [];
+        $variables = $this->getVariables();
+        foreach ($variables as $name => $value) {
+            if (!isset($this->protected[$name])) {
+                $insert[] = $name;
             }
-        } else {
-            $insert = $this->fillable;
         }
 
         $sql = 'INSERT INTO ' . $this->getTable() . '(' . join(',', $insert) . ') VALUES (' .
@@ -331,7 +357,7 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
                     return $total . ',:' . $item;
                 }
             }, '');
-        return $sql . ')';
+        return $sql . ');';
     }
 
     /**
@@ -343,46 +369,29 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
      */
     protected final function update(): string
     {
-        $sql = 'UPDATE ' . $this->getTable() . ' SET ';
+        if (empty($this->changed)) {
+            return '';
+        }
+        $sql = 'UPDATE ' . $this->getTable() . ' SET';
         foreach ($this->changed as $change => $value) {
             $sql .= " {$change}={$value},";
         }
         $sql = rtrim($sql, ',');
 
-        $sql .= ' WHERE ' . static::$primaryKey . '=:' . static::$primaryKey;
-        return $sql;
+        $sql .= ' WHERE ' . $this->primaryKey . '=:' . $this->primaryKey;
+        return $sql . ';';
     }
 
-    /**
-     * Transforms string from camelcase to snake case
-     *
-     * @param string $str
-     *
-     * @return false|mixed|string|string[]|null
-     */
-    private function snakeCase(string $str)
+    public function getAlias(): string
     {
-        $newString = '';
-        for ($i = 0; $i < mb_strlen($str); $i++) {
-            if ($i === 0) {
-                $newString = mb_strtolower($str[$i]);
-                continue;
-            }
-            if (mb_ord($str[$i]) >= mb_ord('A') && mb_ord($str[$i]) <= mb_ord('Z')) {
-                $newString .= '_' . mb_strtolower($str[$i]);
-                continue;
-            }
-            $newString .= $str[$i];
+        return $this->tableAlias;
+    }
+
+    public function getClass(): string
+    {
+        if ($this->calledClass === NULL) {
+            $this->calledClass = get_called_class();
         }
-        return $newString;
-    }
-
-
-    public function getAlias(): string {
-        return static::$tableAlias;
-    }
-
-    public function getClass(): string {
-        return get_called_class();
+        return $this->calledClass;
     }
 }

@@ -42,7 +42,7 @@ final class MySqlDatabase implements Driver
      *
      * @var int
      */
-    private static $fetchMode = PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE;
+    private static $fetchMode = PDO::FETCH_ASSOC;
 
     /**
      * SQL Statement to be executed
@@ -276,7 +276,7 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    private function mapping(Model & $model, array & $mappings)
+    private function mapping(Model $model, array $mappings)
     {
         return $model->lock(function () use ($model, $mappings) {
             foreach ($mappings as $key => $value) {
@@ -295,11 +295,8 @@ final class MySqlDatabase implements Driver
         return $this->execution(
             function (PDOStatement $statement) {
                 $newObjects = [];
-                while (($obj = $statement->fetch(static::$fetchMode)) !== NULL) {
-                    /** @var Model $instance */
-                    $instance = new $this->className();
-                    $mappings = (array)$obj;
-                    $newObjects = $this->mapping($instance, $mappings);
+                while (( $arr = $statement->fetch(static::$fetchMode)) !== false) {
+                    $newObjects[] = $this->mapping(new $this->className(), $arr);
                 }
                 return $newObjects;
             },

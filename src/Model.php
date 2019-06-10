@@ -100,7 +100,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
     {
         $data = static::$driver
             ->sql($this->doSelect($select))
-            ->bindParam(':' . self::$primaryKey, $id)
+            ->bindParam(':' . $this->primaryKey, $id)
             ->bindToClass($this->getClass())
             ->execute();
         if (count($data) === 1) {
@@ -111,7 +111,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
 
     private function doSelect($select): string
     {
-        $key = self::$primaryKey;
+        $key = $this->primaryKey;
         return 'SELECT ' . $this->joinArrayByComma($select) .
             ' FROM ' . $this->getTable() .
             " WHERE {$key}=:id LIMIT 1";
