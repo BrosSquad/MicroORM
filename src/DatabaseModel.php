@@ -382,6 +382,35 @@ class DatabaseModel extends AbstractModel implements Serializable, JsonSerializa
         return $sql . ';';
     }
 
+    protected function deleteOnInstance(): bool {
+        try {
+            return self::$driver->transaction(function (Driver $driver) {
+                $driver->sql("DELETE FROM {$this->getTable()} WHERE {$this->primaryKey}=:{$this->primaryKey}")
+                    ->bindValue(':'. $this->primaryKey, $this->{$this->primaryKey})
+                    ->execute();
+                    return true;
+            });
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+
+    protected static function deleteOnStatic(DatabaseModel $model, $id) {
+        try {
+            return self::$driver->transaction(function (Driver $driver) use($model, $id){
+                $pk = $model->getPrimaryKeyName();
+                $table = $model->getTable();
+                $driver->sql("DELETE FROM {$table} WHERE {$pk}=:{$pk};")
+                    ->bindValue(':'. $pk, $id)
+                    ->execute();
+                return true;
+            });
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
     public function getAlias(): string
     {
         return $this->tableAlias;

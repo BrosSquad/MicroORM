@@ -9,7 +9,6 @@ use Dusan\PhpMvc\Database\Relations\HasMany;
 interface HasManyInterface
 {
     /**
-     *
      * @param string $table
      * @param string $foreignKey
      *
