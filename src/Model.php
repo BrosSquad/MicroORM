@@ -36,6 +36,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
         return new BelongsTo($this->getTable(), $this->primaryKey, $table, $foreignKey);
     }
 
+
     public function __call($name, $arguments)
     {
         if(strcmp($name, 'delete')) {
