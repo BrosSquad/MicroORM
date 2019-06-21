@@ -18,7 +18,8 @@ class Where extends Fluent
         string $orderBy,
         string $groupBy,
         string $class = stdClass::class,
-        array& $bindings = []
+        array& $bindings = [],
+        int $current = 0
     )
     {
         parent::__construct($model, $class);
@@ -29,6 +30,7 @@ class Where extends Fluent
         $this->orderBy = $orderBy;
         $this->groupBy = $groupBy;
         $this->bindings = $bindings;
+        $this->current = $current;
     }
 
     public function orWhere($column, $operator, $value) {

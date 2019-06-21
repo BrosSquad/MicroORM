@@ -11,8 +11,8 @@ use Dusan\PhpMvc\Database\Traits\MemberWithDash;
 use PDO;
 use PDOException;
 use PDOStatement;
+use RuntimeException;
 use stdClass;
-use TypeError;
 
 /**
  * Database Connection class fo MySql driver
@@ -78,6 +78,7 @@ final class MySqlDatabase implements Driver
 
     /**
      * Set custom PDO fetch mode
+     *
      * @param int $fetchMode
      */
     public static function setFetchMode(int $fetchMode): void
@@ -101,6 +102,7 @@ final class MySqlDatabase implements Driver
 
     /**
      * @param int[] $bindings
+     *
      * @inheritDoc
      * @return Driver
      */
@@ -120,11 +122,8 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    public final function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver
+    public final function bindToObject(DatabaseModel $model, array $bindings, array $memberBind = []): Driver
     {
-        if (!is_array($bindings) || !is_array($memberBind)) {
-            throw new TypeError('$bindings and $memberBind variables must be arrays');
-        }
         foreach ($bindings as $member => $binding) {
             $this->bindValue($binding, $model->{$member}, $memberBind[$member] ?? PDO::PARAM_STR);
         }
@@ -137,8 +136,8 @@ final class MySqlDatabase implements Driver
      * Evaluated only when the execute() is called on PDOStatement object
      * makes room for last minute modifications
      *
-     * @param string $name
-     * @param mixed $value
+     * @param string   $name
+     * @param mixed    $value
      * @param int|null $type
      *
      * @return Driver
@@ -154,7 +153,7 @@ final class MySqlDatabase implements Driver
      * If not type is passed type of the $value variable will be determined
      * and PDO::PARAM_* will be returned accordingly
      *
-     * @param mixed $value
+     * @param mixed    $value
      * @param null|int $optionalType
      *
      * @return int
@@ -239,8 +238,9 @@ final class MySqlDatabase implements Driver
      */
     public final function getLastInsertedRow(string $table, string $primaryKey = 'id')
     {
-        $this->sql("SELECT * FROM {$table} WHERE {$primaryKey} = (SELECT MAX({$primaryKey}) FROM {$table});");
-        return $this->execute();
+        throw new RuntimeException('Method is not implemented');
+//        $this->sql("SELECT * FROM {$table} WHERE {$primaryKey} = (SELECT MAX({$primaryKey}) FROM {$table});");
+//        return $this->execute();
     }
 
 
@@ -295,7 +295,7 @@ final class MySqlDatabase implements Driver
         return $this->execution(
             function (PDOStatement $statement) {
                 $newObjects = [];
-                while (( $arr = $statement->fetch(static::$fetchMode)) !== false) {
+                while (($arr = $statement->fetch(static::$fetchMode)) !== false) {
                     $newObjects[] = $this->mapping(new $this->className(), $arr);
                 }
                 return $newObjects;
@@ -367,7 +367,7 @@ final class MySqlDatabase implements Driver
     }
 
     /**
-     * @param string $type
+     * @param string         $type
      * @param BindToDatabase $binding
      */
     public static final function setCustomTypes(string $type, BindToDatabase $binding)

@@ -6,7 +6,6 @@ namespace Dusan\PhpMvc\Database;
 use Closure;
 use PDO;
 use PDOException;
-use TypeError;
 
 /**
  * Database Connection class
@@ -58,7 +57,7 @@ interface Driver
      *
      * @return $this
      */
-    public function bindToObject(DatabaseModel $model, array $bindings, $memberBind = []): Driver;
+    public function bindToObject(DatabaseModel $model, array $bindings, array $memberBind = []): Driver;
 
     /**
      * Binds to the reference of the $value
@@ -156,7 +155,6 @@ interface Driver
      */
     public function execute(?int $fetchMode = NULL, $insertOrUpdate = false);
 
-//    public function yield(?int $fetchMode = NULL, bool $insertOrUpdate = false);
 
     /**
      * @return PDO

@@ -19,7 +19,8 @@ class GroupBy extends Fluent
         string $orderBy,
         string $groupBy,
         string $class = stdClass::class,
-        array& $bindings = []
+        array& $bindings = [],
+        int $current = 0
     )
     {
         parent::__construct($model, $class);
@@ -30,6 +31,7 @@ class GroupBy extends Fluent
         $this->orderBy = $orderBy;
         $this->groupBy = $groupBy;
         $this->bindings = $bindings;
+        $this->current = $current;
     }
 
     public function having(string $column, string $operator, $value)

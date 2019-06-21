@@ -2,7 +2,7 @@
 
 namespace Dusan\PhpMvc\Database\FluentApi;
 
-interface AdvancedFluentInterface
+interface AdvancedFluentInterface extends FluentInterface
 {
 
     /**
@@ -35,4 +35,12 @@ interface AdvancedFluentInterface
      * @return FluentInterface
      */
     public function whereNotEquals(string $column, $value): FluentInterface;
+
+    public function wherePrimaryKey(array $values): FluentInterface;
+
+    public function whereNotPrimaryKey(array $values): FluentInterface;
+
+    public function whereIn(string $column, array $values): FluentInterface;
+
+    public function whereNotIn(string $column, array $values): FluentInterface;
 }

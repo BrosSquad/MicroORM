@@ -16,7 +16,7 @@ use stdClass;
  * It supports INNER,LEFT and RIGHT Sql Joins, complex WHERE Statements, ORDER BY,
  * GROUP BY
  * Mysql syntax is only supported
- *
+ * TODO: Check ? and : bind parameters in single sql statement
  * @package Dusan\PhpMvc\Database\FluentApi
  * @author  Dusan Malusev
  * @see     \Dusan\PhpMvc\Database\DatabaseModelOLD
@@ -26,6 +26,7 @@ class Fluent implements PdoConstants, FluentInterface
 {
     use JoinArrayByComma;
 
+    protected $current = 0;
     /**
      * @internal
      * @var string
@@ -129,20 +130,23 @@ class Fluent implements PdoConstants, FluentInterface
 
 
     /**
-     * @param $column
-     * @param $operator
-     * @param $value
+     * @param string $column
+     * @param string $operator
+     * @param mixed  $value
      *
      * @internal
      * @return string
      */
-    protected function whereGenerator($column, $operator, $value): string
+    protected function whereGenerator(string $column, string $operator, $value): string
     {
-        $bind = ':' . strtolower($column);
+        // Use Micro time to ensure uniqueness of the binding parameter
+        // TODO: Find faster way if exists
+        $bind = ':' . strtolower($column) . microtime(true);
         $this->bindings[$bind] = [
             'type' => $this->typeBindings[$column] ?? self::STRING,
             'value' => $value,
         ];
+
         return "{$column} $operator {$bind} ";
     }
 
@@ -156,7 +160,6 @@ class Fluent implements PdoConstants, FluentInterface
     public function select($select = ['*']): Fluent
     {
         $this->select = 'SELECT ' . $this->joinArrayByComma($select) . ' FROM ' . $this->table . ' ';
-//        $this->sql = 'SELECT ' . $this->joinArrayByComma($select) . ' FROM ' .$this->table . ' ';
         return $this;
     }
 
@@ -226,7 +229,7 @@ class Fluent implements PdoConstants, FluentInterface
         return $this->newWhere();
     }
 
-    private function newWhere(): Where
+    protected function newWhere(): Where
     {
         return new Where(
             $this->model,
@@ -237,7 +240,8 @@ class Fluent implements PdoConstants, FluentInterface
             $this->orderBy,
             $this->groupBy,
             $this->bind,
-            $this->bindings
+            $this->bindings,
+            $this->current
         );
     }
 
@@ -320,7 +324,7 @@ class Fluent implements PdoConstants, FluentInterface
         return $this->newGroupBy();
     }
 
-    private function newGroupBy(): GroupBy
+    protected function newGroupBy(): GroupBy
     {
         return new GroupBy(
             $this->model,
@@ -331,7 +335,8 @@ class Fluent implements PdoConstants, FluentInterface
             $this->orderBy,
             $this->groupBy,
             $this->bind,
-            $this->bindings
+            $this->bindings,
+            $this->current
         );
     }
 
@@ -378,7 +383,7 @@ class Fluent implements PdoConstants, FluentInterface
      * @see  Collection
      * @return \Dusan\PhpMvc\Collections\Collection
      */
-    private function asCollection(): Collection
+    protected function asCollection(): Collection
     {
         $this->data = Collection::fromArray($this->asArray());
         return $this->data;
@@ -405,7 +410,7 @@ class Fluent implements PdoConstants, FluentInterface
      * @return array
      * @throws \PDOException
      */
-    private function asArray(): array
+    protected function asArray(): array
     {
         $this->data = static::$database->sql($this->getSql())
             ->bindToClass($this->bind)

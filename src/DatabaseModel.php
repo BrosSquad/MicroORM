@@ -121,13 +121,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __call($name, $arguments)
     {
-        if (strcmp($name, 'testInsert') === 0) {
-            return $this->insert();
-        } else if (strcmp($name, 'testUpdate') === 0) {
-            return $this->update();
-        } else if (strcmp($name, 'delete')) {
-            $this->deleteOnInstance();
-        }
         throw new MethodNotFound('Method with name ' . $name . ' is not found');
     }
 
@@ -157,7 +150,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         $this->protected[] = 'primaryKey';
     }
 
-
     protected static function setTable(): string
     {
         $splitClass = explode('\\', get_called_class());
@@ -168,12 +160,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     {
         return $this->table;
     }
-
-    protected static function setDatabaseDriver(Driver $driver)
-    {
-        self::$driver = $driver;
-    }
-
 
     public function getPrimaryKeyName()
     {
@@ -187,7 +173,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * @param $name
      * @param $arguments
      *
-     * @return DatabaseModelOLD|Fluent|null|void
+     * @return \Dusan\PhpMvc\Database\DatabaseModel|Fluent|null|void
      * @throws \Exception
      */
     public static function __callStatic($name, $arguments)
@@ -276,7 +262,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     /**
      * Generated the insert sql statement with values that are added in $fillable array
      *
-     * @internal
      * @return bool
      */
     public final function insert(): bool
@@ -302,7 +287,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * Generated the sql update statement from the $changed array
      * and bindings for these elements
      *
-     * @internal
      * @return bool
      */
     public final function update(): bool
@@ -326,7 +310,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     protected static function deleteOnStatic(DatabaseModel $model, $id)
     {
-
         return (new Delete($model, [], $id))->save();
     }
 
