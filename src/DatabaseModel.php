@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Dusan\PhpMvc\Database;
 
+use Carbon\CarbonImmutable;
 use Dusan\PhpMvc\Database\Actions\Delete;
 use Dusan\PhpMvc\Database\Actions\Save;
 use Dusan\PhpMvc\Database\Exceptions\MethodNotFound;
 use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
 use Dusan\PhpMvc\Database\FluentApi\Fluent;
-use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
+use Dusan\PhpMvc\Database\Traits\Exists;
 use Dusan\PhpMvc\Database\Traits\Lockable;
 use Exception;
 use JsonSerializable;
@@ -16,8 +17,18 @@ use Serializable;
 
 abstract class DatabaseModel extends AbstractModel implements Serializable, JsonSerializable
 {
-    use JoinArrayByComma;
     use Lockable;
+    use Exists;
+    /**
+     * Name of column in database for primary key
+     *
+     * @var string
+     */
+    const PRIMARY_KEY = 'id';
+
+    const CREATED_AT = 'created_at';
+
+    const UPDATED_AT = 'updated_at';
 
     /**
      * @var null|array
@@ -29,13 +40,13 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      */
     private $calledClass = NULL;
 
-
     /**
-     * Name of column in database for primary key
+     * Flag that indicates if Model exists in Database
      *
-     * @var string
+     * @var bool
      */
-    protected $primaryKey = 'id';
+    protected $modelExists = false;
+
 
     /**
      * Alias for the table
@@ -121,6 +132,10 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __call($name, $arguments)
     {
+        if(strcmp($name, 'setExists')) {
+            $this->fromDb($arguments[0], $arguments[1]);
+            return;
+        }
         throw new MethodNotFound('Method with name ' . $name . ' is not found');
     }
 
@@ -134,7 +149,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         $this->guarded[] = 'tableAlias';
         $this->guarded[] = 'protected';
         $this->guarded[] = 'guarded';
-        $this->guarded[] = 'primaryKey';
+        $this->guarded[] = 'modelExists';
     }
 
     private function protectedFields()
@@ -147,7 +162,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         $this->protected[] = 'tableAlias';
         $this->protected[] = 'protected';
         $this->protected[] = 'guarded';
-        $this->protected[] = 'primaryKey';
+        $this->protected[] = 'modelExists';
     }
 
     protected static function setTable(): string
@@ -163,7 +178,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function getPrimaryKeyName()
     {
-        return $this->primaryKey;
+        return self::PRIMARY_KEY;
     }
 
     /**
@@ -277,7 +292,10 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
                 }
             }
         }
-
+        if (property_exists($this, self::UPDATED_AT)) {
+            $this->{self::CREATED_AT} = CarbonImmutable::now();
+            $bindings[self::CREATED_AT] = ':' . self::CREATED_AT;
+        }
         $save = new Save($this, $bindings, true, $sql ?? NULL);
 
         return $save->save();
@@ -296,15 +314,27 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings = $this->setUpdateBindings();
         } else {
             $bindings = $this->changed;
-            $bindings[$this->primaryKey] = ':' . $this->primaryKey;
+            $bindings[self::PRIMARY_KEY] = ':' . self::PRIMARY_KEY;
+        }
+        if (property_exists($this, self::UPDATED_AT)) {
+            $this->{self::UPDATED_AT} = CarbonImmutable::now();
+            $bindings[self::UPDATED_AT] = ':' . self::UPDATED_AT;
         }
         $save = new Save($this, $bindings, false, $sql ?? NULL);
         return $save->save();
     }
 
+    public function save()
+    {
+        if ($this->modelExists) {
+            return $this->update();
+        }
+        return $this->insert();
+    }
+
     protected function deleteOnInstance(): bool
     {
-        return (new Delete($this, [], $this->{$this->primaryKey}))->save();
+        return (new Delete($this, [], $this->{self::PRIMARY_KEY}))->save();
     }
 
 

@@ -12,6 +12,9 @@ use Dusan\PhpMvc\Database\FluentApi\FluentInterface;
 use Dusan\PhpMvc\Database\Relations\BelongsTo;
 use Dusan\PhpMvc\Database\Relations\HasMany;
 
+/**
+ * @method setExists(\Dusan\PhpMvc\Database\Drivers\MySqlDatabase $param, bool $true)
+ */
 abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
 {
     /**
@@ -22,7 +25,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      */
     public final function hashMany(string $table, string $foreignKey): HasMany
     {
-        return new HasMany($this->getTable(), $this->primaryKey, $table, $foreignKey);
+        return new HasMany($this->getTable(), self::PRIMARY_KEY, $table, $foreignKey);
     }
 
     /**
@@ -33,7 +36,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      */
     public final function belongsTo(string $table, string $foreignKey): BelongsTo
     {
-        return new BelongsTo($this->getTable(), $this->primaryKey, $table, $foreignKey);
+        return new BelongsTo($this->getTable(), self::PRIMARY_KEY, $table, $foreignKey);
     }
 
 
@@ -114,16 +117,16 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
     protected function find( $id, $select = ['*']): ?Model
     {
         return $this->query()
-            ->where($this->primaryKey, '=', $id)
+            ->where(self::PRIMARY_KEY, '=', $id)
             ->select($select)
             ->get();
     }
 
-    private function doSelect($select): string
-    {
-        $key = $this->primaryKey;
-        return 'SELECT ' . $this->joinArrayByComma($select) .
-            ' FROM ' . $this->getTable() .
-            " WHERE {$key}=:id LIMIT 1;";
-    }
+//    private function doSelect($select): string
+//    {
+//        $key = self::PRIMARY_KEY;
+//        return 'SELECT ' . $this->joinArrayByComma($select) .
+//            ' FROM ' . $this->getTable() .
+//            " WHERE {$key}=:id LIMIT 1;";
+//    }
 }

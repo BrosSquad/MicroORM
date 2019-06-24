@@ -3,16 +3,12 @@
 namespace Dusan\PhpMvc\Database\Drivers;
 
 use Closure;
-use Dusan\PhpMvc\Database\BindToDatabase;
-use Dusan\PhpMvc\Database\DatabaseModel;
-use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\Model;
-use Dusan\PhpMvc\Database\Traits\MemberWithDash;
+use Dusan\PhpMvc\Database\{DatabaseModel, Driver, Model};
+use Dusan\PhpMvc\Database\Traits\{DbToObject, MemberWithDash, ObjectToDb};
 use PDO;
 use PDOException;
 use PDOStatement;
 use RuntimeException;
-use stdClass;
 
 /**
  * Database Connection class fo MySql driver
@@ -21,60 +17,12 @@ use stdClass;
  * @author  Dusan Malusev
  * @version 2.0
  */
-final class MySqlDatabase implements Driver
+final class MySqlDatabase extends Database
 {
     use MemberWithDash;
+    use ObjectToDb;
+    use DbToObject;
 
-
-    protected static $customTypes = NULL;
-
-    /**
-     * Internal database connection
-     *
-     * @internal
-     * @var PDO
-     */
-    protected $pdo = NULL;
-
-    /**
-     * PDO fetch mode
-     * defaults to FETCH_CLASS
-     *
-     * @var int
-     */
-    private static $fetchMode = PDO::FETCH_ASSOC;
-
-    /**
-     * SQL Statement to be executed
-     *
-     * @var string
-     */
-    private $sql = '';
-
-    /**
-     * Default fetch class
-     *
-     * @var string
-     */
-    private $className = stdClass::class;
-
-    /**
-     * Sql Prepared statement
-     *
-     * @internal
-     * @var PDOStatement
-     */
-    private $statement = NULL;
-
-    /**
-     * Database constructor
-     *
-     * @param \PDO $pdo
-     */
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
 
     /**
      * Set custom PDO fetch mode
@@ -131,6 +79,7 @@ final class MySqlDatabase implements Driver
         return $this;
     }
 
+
     /**
      * Binds to the reference of the $value
      * Evaluated only when the execute() is called on PDOStatement object
@@ -146,46 +95,6 @@ final class MySqlDatabase implements Driver
     {
         $this->statement->bindParam($name, $value, $this->bindToPdoType($value, $type));
         return $this;
-    }
-
-    /**
-     * Type bindings for PDO prepared statement
-     * If not type is passed type of the $value variable will be determined
-     * and PDO::PARAM_* will be returned accordingly
-     *
-     * @param mixed    $value
-     * @param null|int $optionalType
-     *
-     * @return int
-     */
-    public final function bindToPdoType(&$value, ?int $optionalType = NULL): int
-    {
-        if (is_null($optionalType)) {
-            switch (true) {
-                case is_int($value):
-                    return PDO::PARAM_INT;
-                case is_bool($value):
-                    return PDO::PARAM_BOOL;
-                case is_null($value):
-                    return PDO::PARAM_NULL;
-                case is_string($value):
-                    return PDO::PARAM_STR;
-            }
-            $type = gettype($value);
-            /**
-             * @var BindToDatabase $customType
-             */
-            $customType = static::$customTypes[$type];
-            if (isset($customType)) {
-                $set = $customType->bind($value);
-                $value = $set->value;
-                return $set->key;
-            }
-
-            return PDO::PARAM_STR;
-        } else {
-            return $optionalType;
-        }
     }
 
     /**
@@ -239,8 +148,6 @@ final class MySqlDatabase implements Driver
     public final function getLastInsertedRow(string $table, string $primaryKey = 'id')
     {
         throw new RuntimeException('Method is not implemented');
-//        $this->sql("SELECT * FROM {$table} WHERE {$primaryKey} = (SELECT MAX({$primaryKey}) FROM {$table});");
-//        return $this->execute();
     }
 
 
@@ -276,103 +183,38 @@ final class MySqlDatabase implements Driver
     /**
      * @inheritDoc
      */
-    private function mapping(Model $model, array $mappings)
+    protected function mapping(Model $model, array $mappings)
     {
         return $model->lock(function () use ($model, $mappings) {
             foreach ($mappings as $key => $value) {
-                $model->{$key} = $value;
+                $this->bindFromPdoToObject($model->{$key}, $value);
+//                $model->{$key} = $value;
             }
             return $model;
         });
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @throws \PDOException
+     * @return array|bool|object
      */
-    public final function execute(?int $fetchMode = NULL, $insertOrUpdate = false)
+    public final function execute(?int $fetchMode = NULL, bool $insertOrUpdate = false)
     {
         return $this->execution(
             function (PDOStatement $statement) {
                 $newObjects = [];
                 while (($arr = $statement->fetch(static::$fetchMode)) !== false) {
-                    $newObjects[] = $this->mapping(new $this->className(), $arr);
+                    /** @var Model $instance */
+                    $instance = new $this->className();
+                    $instance->setExists($this, true);
+                    $newObjects[] = $this->mapping($instance, $arr);
                 }
                 return $newObjects;
             },
             $fetchMode,
             $insertOrUpdate
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public final function getPdo(): PDO
-    {
-        return $this->pdo;
-    }
-
-    /**
-     * Wrapper for PDO::beginTransaction
-     *
-     * @return bool
-     * @throws \PDOException
-     */
-    public final function startTransaction()
-    {
-        return $this->pdo->beginTransaction();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public final function rollBack(): bool
-    {
-        return $this->pdo->rollBack();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public final function getError(): array
-    {
-        return $this->pdo->errorInfo();
-    }
-
-    /**
-     * Wrapper for PDO commit method
-     *
-     * @return bool
-     * @throws \PDOException
-     */
-    public final function commit(): bool
-    {
-        return $this->pdo->commit();
-    }
-
-    /**
-     * Cleans up the database connection
-     */
-    public final function __destruct()
-    {
-        if ($this->pdo !== NULL) {
-            unset($this->pdo);
-            $this->pdo = NULL;
-        }
-        if ($this->statement) {
-            unset($this->statement);
-            $this->statement = NULL;
-        }
-    }
-
-    /**
-     * @param string         $type
-     * @param BindToDatabase $binding
-     */
-    public static final function setCustomTypes(string $type, BindToDatabase $binding)
-    {
-        self::$customTypes[$type] = $binding;
     }
 
 }

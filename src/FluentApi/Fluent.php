@@ -2,12 +2,9 @@
 
 namespace Dusan\PhpMvc\Database\FluentApi;
 
+use Dusan\PhpMvc\Database\{Driver, Model, Relations\Relation};
 use Dusan\PhpMvc\Collections\Collection;
-use Dusan\PhpMvc\Database\Driver;
-use Dusan\PhpMvc\Database\Model;
-use Dusan\PhpMvc\Database\PdoConstants;
-use Dusan\PhpMvc\Database\Relations\Relation;
-use Dusan\PhpMvc\Database\Traits\JoinArrayByComma;
+use PDO;
 use stdClass;
 
 /**
@@ -17,14 +14,14 @@ use stdClass;
  * GROUP BY
  * Mysql syntax is only supported
  * TODO: Check ? and : bind parameters in single sql statement
+ *
  * @package Dusan\PhpMvc\Database\FluentApi
  * @author  Dusan Malusev
  * @see     \Dusan\PhpMvc\Database\DatabaseModelOLD
  * @version 2.0
  */
-class Fluent implements PdoConstants, FluentInterface
+class Fluent implements FluentInterface
 {
-    use JoinArrayByComma;
 
     protected $current = 0;
     /**
@@ -143,7 +140,7 @@ class Fluent implements PdoConstants, FluentInterface
         // TODO: Find faster way if exists
         $bind = ':' . strtolower($column) . microtime(true);
         $this->bindings[$bind] = [
-            'type' => $this->typeBindings[$column] ?? self::STRING,
+            'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
             'value' => $value,
         ];
 
@@ -159,14 +156,14 @@ class Fluent implements PdoConstants, FluentInterface
      */
     public function select($select = ['*']): Fluent
     {
-        $this->select = 'SELECT ' . $this->joinArrayByComma($select) . ' FROM ' . $this->table . ' ';
+        $this->select = 'SELECT ' . join(',', $select) . ' FROM ' . $this->table . ' ';
         return $this;
     }
 
     public function selectDistinct($select = ['*']): Fluent
     {
         $this->select = 'SELECT DISTINCT' .
-            $this->joinArrayByComma($select) .
+            join(',', $select) .
             'FROM ' .
             $this->table . ' ';
         return $this;
@@ -320,7 +317,7 @@ class Fluent implements PdoConstants, FluentInterface
 
     public function groupBy(array $columns): GroupBy
     {
-        $this->groupBy = 'GROUP BY ' . $this->joinArrayByComma($columns) . ' ';
+        $this->groupBy = 'GROUP BY ' . join(',', $columns) . ' ';
         return $this->newGroupBy();
     }
 
@@ -352,11 +349,11 @@ class Fluent implements PdoConstants, FluentInterface
         $startItem = $page * $perPage;
         $this->limit = 'LIMIT :start, :end;';
         $this->bindings[':start'] = [
-            'type' => self::INTEGER,
+            'type' => PDO::PARAM_INT,
             'value' => $startItem,
         ];
         $this->bindings[':end'] = [
-            'type' => self::INTEGER,
+            'type' => PDO::PARAM_INT,
             'value' => $perPage,
         ];
         return $this;
@@ -430,6 +427,8 @@ class Fluent implements PdoConstants, FluentInterface
         $this->join = "{$joinType} JOIN {$relation->getForeignTable()} ON {$relation->getRelation()} ";
         return $this;
     }
+
+
 
     public static function setDatabase(Driver $database): void
     {

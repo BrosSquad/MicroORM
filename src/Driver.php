@@ -153,7 +153,7 @@ interface Driver
      * @author Dusan Malusev
      * @return array|\Dusan\PhpMvc\Collections\Collection|mixed
      */
-    public function execute(?int $fetchMode = NULL, $insertOrUpdate = false);
+    public function execute(?int $fetchMode = NULL, bool $insertOrUpdate = false);
 
 
     /**

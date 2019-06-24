@@ -26,7 +26,8 @@
     "dusan/php-mvc-collections": "^1.0",
     "ext-pdo": "*",
     "ext-json": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "nesbot/carbon": "^2.19"
   },
   "require-dev": {
     "phpunit/phpunit": "8.1.*"
