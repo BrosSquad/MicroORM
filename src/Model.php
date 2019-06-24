@@ -5,6 +5,7 @@ namespace Dusan\MicroORM;
 
 
 use ArgumentCountError;
+use Dusan\MicroORM\Drivers\Database;
 use Dusan\MicroORM\FluentApi\AdvancedFluent;
 use Dusan\MicroORM\FluentApi\AdvancedFluentInterface;
 use Dusan\MicroORM\FluentApi\Fluent;
@@ -13,7 +14,8 @@ use Dusan\MicroORM\Relations\BelongsTo;
 use Dusan\MicroORM\Relations\HasMany;
 
 /**
- * @method setExists(\Dusan\MicroORM\Drivers\MySqlDatabase $param, bool $true)
+ * @method setExists(Database $param, bool $true)
+ * @method delete($id)
  */
 abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
 {
@@ -62,7 +64,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
             case 'query':
                 return $instance->query();
             case 'find':
-                return $instance->find( $arguments[0], $arguments[1] ?? ['*']);
+                return $instance->find($arguments[0], $arguments[1] ?? ['*']);
             case 'fluent':
                 return $instance->fluent();
             case 'delete':
@@ -122,11 +124,4 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
             ->get();
     }
 
-//    private function doSelect($select): string
-//    {
-//        $key = self::PRIMARY_KEY;
-//        return 'SELECT ' . $this->joinArrayByComma($select) .
-//            ' FROM ' . $this->getTable() .
-//            " WHERE {$key}=:id LIMIT 1;";
-//    }
 }

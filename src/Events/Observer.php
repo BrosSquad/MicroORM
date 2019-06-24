@@ -3,7 +3,7 @@
 namespace Dusan\MicroORM\Events;
 
 
-use Dusan\MicroORM\Model;
+use Dusan\MicroORM\DatabaseModel;
 
 /**
  * Interface Observer
@@ -33,25 +33,25 @@ interface Observer
     /**
      * This method runs when model is already inserted
      *
-     * @param Model $model
+     * @param \Dusan\MicroORM\DatabaseModel $model
      */
-    public function created(Model $model): void;
+    public function created(DatabaseModel $model): void;
 
     /**
      * This method runs when model is already updated
      *
-     * @param \Dusan\MicroORM\Model $model
+     * @param \Dusan\MicroORM\DatabaseModel $model
      *
      * @return void
      */
-    public function updated(Model $model): void;
+    public function updated(DatabaseModel $model): void;
 
     /**
      * This method runs when model is already deleted
      *
-     * @param \Dusan\MicroORM\Model $model
+     * @param \Dusan\MicroORM\DatabaseModel $model
      *
      * @return void
      */
-    public function deleted(Model $model): void;
+    public function deleted(DatabaseModel $model): void;
 }

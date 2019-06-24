@@ -195,4 +195,13 @@ interface Driver
     public function __destruct();
 
     public static function setCustomTypes(string $type, BindToDatabase $bind);
+
+    /**
+     * Binds value from the database to the object
+     *
+     * @param string                           $type
+     * @param \Dusan\MicroORM\BindFromDatabase $binding
+     */
+    public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding);
+
 }

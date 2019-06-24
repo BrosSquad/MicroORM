@@ -74,11 +74,11 @@ class Save extends Action
      * Generated the insert sql statement with values that are added in $fillable array
      *
      * @internal
-     * @return void
+     * @return void|int
      */
-    protected final function insert(): void
+    protected function insert()
     {
-        self::$driver->transaction(function (Driver $driver) {
+        return self::$driver->transaction(function (Driver $driver) {
             $driver->sql($this->generateInsertStatement());
             foreach ($this->fields as $name => $bind) {
                 $driver->bindValue($bind, $this->dbModel->{$name});

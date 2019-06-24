@@ -4,13 +4,10 @@ declare(strict_types=1);
 namespace Dusan\MicroORM;
 
 use Carbon\CarbonImmutable;
-use Dusan\MicroORM\Actions\Delete;
-use Dusan\MicroORM\Actions\Save;
-use Dusan\MicroORM\Exceptions\MethodNotFound;
-use Dusan\MicroORM\Exceptions\PropertyNotFound;
+use Dusan\MicroORM\Actions\{Delete, Save};
+use Dusan\MicroORM\Exceptions\{MethodNotFound, PropertyNotFound};
+use Dusan\MicroORM\Traits\{Exists, Lockable, Observable};
 use Dusan\MicroORM\FluentApi\Fluent;
-use Dusan\MicroORM\Traits\Exists;
-use Dusan\MicroORM\Traits\Lockable;
 use Exception;
 use JsonSerializable;
 use Serializable;
@@ -19,6 +16,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 {
     use Lockable;
     use Exists;
+    use Observable;
     /**
      * Name of column in database for primary key
      *
@@ -132,7 +130,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __call($name, $arguments)
     {
-        if(strcmp($name, 'setExists')) {
+        if (strcmp($name, 'setExists')) {
             $this->fromDb($arguments[0], $arguments[1]);
             return;
         }
@@ -297,8 +295,10 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings[self::CREATED_AT] = ':' . self::CREATED_AT;
         }
         $save = new Save($this, $bindings, true, $sql ?? NULL);
-
-        return $save->save();
+        if(self::$observer) self::$observer->creating();
+        $insert = $save->save();
+        if($insert && self::$observer) self::$observer->created($this);
+        return $insert;
     }
 
     /**
@@ -321,7 +321,10 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings[self::UPDATED_AT] = ':' . self::UPDATED_AT;
         }
         $save = new Save($this, $bindings, false, $sql ?? NULL);
-        return $save->save();
+        if(self::$observer) self::$observer->updating();
+        $update =  $save->save();
+        if($update && self::$observer) self::$observer->created($this);
+        return $update;
     }
 
     public function save()
@@ -334,14 +337,22 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     protected function deleteOnInstance(): bool
     {
-        return (new Delete($this, [], $this->{self::PRIMARY_KEY}))->save();
+        $delete = new Delete($this, [], $this->{self::PRIMARY_KEY});
+        if(self::$observer) self::$observer->deleting();
+        $deleted = $delete->save();
+        if($deleted && self::$observer) self::$observer->deleted($this);
+        return $deleted;
     }
-
 
     protected static function deleteOnStatic(DatabaseModel $model, $id)
     {
-        return (new Delete($model, [], $id))->save();
+        $delete = new Delete($model, [], $id);
+        if(self::$observer) self::$observer->deleting();
+        $deleted = $delete->save();
+        if($deleted && self::$observer) self::$observer->created($model);
+        return $deleted;
     }
+
 
     public function getAlias(): string
     {
