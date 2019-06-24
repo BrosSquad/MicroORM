@@ -4,6 +4,8 @@
 namespace Dusan\MicroORM\FluentApi;
 
 
+use PDO;
+
 class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentInterface
 {
 
@@ -51,11 +53,11 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         $this->where = 'WHERE ' . $column . 'BETWEEN :start, :end ';
 
         $this->bindings[':start'] = [
-            'type' => $this->typeBindings[$column] ?? self::STRING,
+            'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
             'value' => $start,
         ];
         $this->bindings[':end'] = [
-            'type' => $this->typeBindings[$column] ?? self::STRING,
+            'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
             'value' => $end,
         ];
         return $this->newWhere();
@@ -67,7 +69,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         foreach($values as $val) {
             $this->where .= '?,';
             $this->bindings[++$this->current] = [
-                'type' => $this->typeBindings[$column] ?? self::STRING,
+                'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
                 'value' => $val,
             ];
         }
@@ -90,7 +92,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         foreach($values as $val) {
             $this->where .= '?,';
             $this->bindings[++$this->current] = [
-                'type' => $this->typeBindings[$column] ?? self::STRING,
+                'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
                 'value' => $val,
             ];
         }

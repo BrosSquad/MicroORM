@@ -2,7 +2,7 @@
 
 namespace Dusan\MicroORM\FluentApi;
 
-use Dusan\MicroORM\{Driver, Model, Relations\Relation};
+use Dusan\MicroORM\{Driver, Model, Relations\Relation, Traits\Random};
 use Dusan\PhpMvc\Collections\Collection;
 use PDO;
 use stdClass;
@@ -23,6 +23,7 @@ use stdClass;
 class Fluent implements FluentInterface
 {
 
+    use Random;
     protected $current = 0;
     /**
      * @internal
@@ -136,9 +137,7 @@ class Fluent implements FluentInterface
      */
     protected function whereGenerator(string $column, string $operator, $value): string
     {
-        // Use Micro time to ensure uniqueness of the binding parameter
-        // TODO: Find faster way if exists
-        $bind = ':' . strtolower($column) . microtime(true);
+        $bind = ':' . strtolower($column) . $this->randomString(5);
         $this->bindings[$bind] = [
             'type' => $this->typeBindings[$column] ?? PDO::PARAM_STR,
             'value' => $value,

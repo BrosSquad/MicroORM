@@ -47,7 +47,8 @@ class GroupBy extends Fluent
             $this->orderBy,
             $this->groupBy,
             $this->bind,
-            $this->bindings
+            $this->bindings,
+            $this->current
         );
     }
 

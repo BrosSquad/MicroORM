@@ -23,7 +23,8 @@ class Having extends Fluent
         string $orderBy,
         string $groupBy,
         string $class = stdClass::class,
-        array& $bindings = []
+        array& $bindings = [],
+        int $current = 0
     )
     {
         parent::__construct($model, $class);
@@ -35,6 +36,7 @@ class Having extends Fluent
         $this->groupBy = $groupBy;
         $this->having = $having;
         $this->bindings = $bindings;
+        $this->current = $current;
     }
 
     /**

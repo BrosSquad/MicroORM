@@ -88,10 +88,8 @@ interface FluentInterface
      * @api
      *
      * @param string $table reference table or class
-     * @param null   $foreignKey
      *
      * @return Fluent
-     * @throws \ReflectionException
      */
     public function innerJoin($table);
 
@@ -106,10 +104,8 @@ interface FluentInterface
 
     /**
      * @param      $table
-     * @param null $foreignKey
      *
      * @return Fluent
-     * @throws \ReflectionException
      */
     public function leftJoin($table);
 
