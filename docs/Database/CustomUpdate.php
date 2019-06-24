@@ -1,7 +1,7 @@
 <?php
 
-use Dusan\PhpMvc\Database\CustomUpdate;
-use Dusan\PhpMvc\Database\Model;
+use Dusan\MicroORM\CustomUpdate;
+use Dusan\MicroORM\Model;
 
 class User extends Model implements CustomUpdate
 {

@@ -1,19 +1,19 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
 use ArgumentCountError;
-use Dusan\PhpMvc\Database\FluentApi\AdvancedFluent;
-use Dusan\PhpMvc\Database\FluentApi\AdvancedFluentInterface;
-use Dusan\PhpMvc\Database\FluentApi\Fluent;
-use Dusan\PhpMvc\Database\FluentApi\FluentInterface;
-use Dusan\PhpMvc\Database\Relations\BelongsTo;
-use Dusan\PhpMvc\Database\Relations\HasMany;
+use Dusan\MicroORM\FluentApi\AdvancedFluent;
+use Dusan\MicroORM\FluentApi\AdvancedFluentInterface;
+use Dusan\MicroORM\FluentApi\Fluent;
+use Dusan\MicroORM\FluentApi\FluentInterface;
+use Dusan\MicroORM\Relations\BelongsTo;
+use Dusan\MicroORM\Relations\HasMany;
 
 /**
- * @method setExists(\Dusan\PhpMvc\Database\Drivers\MySqlDatabase $param, bool $true)
+ * @method setExists(\Dusan\MicroORM\Drivers\MySqlDatabase $param, bool $true)
  */
 abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
 {
@@ -21,7 +21,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @param string $table
      * @param string $foreignKey
      * @api
-     * @return \Dusan\PhpMvc\Database\Relations\HasMany
+     * @return \Dusan\MicroORM\Relations\HasMany
      */
     public final function hashMany(string $table, string $foreignKey): HasMany
     {
@@ -32,7 +32,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @param string $table
      * @param string $foreignKey
      * @api
-     * @return \Dusan\PhpMvc\Database\Relations\BelongsTo
+     * @return \Dusan\MicroORM\Relations\BelongsTo
      */
     public final function belongsTo(string $table, string $foreignKey): BelongsTo
     {
@@ -79,7 +79,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * Returns all records from the database based on the given filtering
      *
      * @api
-     * @return \Dusan\PhpMvc\Database\FluentApi\AdvancedFluentInterface
+     * @return \Dusan\MicroORM\FluentApi\AdvancedFluentInterface
      * @example "../../docs/Database/query.php"
      * @see     Fluent
      */
@@ -93,8 +93,8 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
 
     /**
      * @api
-     * @see \Dusan\PhpMvc\Database\Model::query()
-     * @return \Dusan\PhpMvc\Database\FluentApi\FluentInterface
+     * @see \Dusan\MicroORM\Model::query()
+     * @return \Dusan\MicroORM\FluentApi\FluentInterface
      */
     protected function fluent() : FluentInterface {
         return new Fluent(

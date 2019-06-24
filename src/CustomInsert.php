@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
 /**
@@ -12,7 +12,7 @@ namespace Dusan\PhpMvc\Database;
  * @api
  * @author Dusan Malusev <dusan.998@outlook.com>
  * @example "../../docs/CustomInsert.php"
- * @package Dusan\PhpMvc\Database
+ * @package Dusan\MicroORM
  */
 interface CustomInsert
 {

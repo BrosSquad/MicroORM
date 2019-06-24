@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Traits;
+namespace Dusan\MicroORM\Traits;
 
 
-use Dusan\PhpMvc\Database\BindToDatabase;
+use Dusan\MicroORM\BindToDatabase;
 use PDO;
 
 trait ObjectToDb

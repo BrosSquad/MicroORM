@@ -1,10 +1,10 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\CustomBindings;
+namespace Dusan\MicroORM\CustomBindings;
 
 use DateTimeInterface;
 use Dusan\PhpMvc\Collections\Set;
-use Dusan\PhpMvc\Database\BindToDatabase;
+use Dusan\MicroORM\BindToDatabase;
 use PDO;
 use TypeError;
 

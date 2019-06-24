@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\FluentApi;
+namespace Dusan\MicroORM\FluentApi;
 
 interface AdvancedFluentInterface extends FluentInterface
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Traits;
+namespace Dusan\MicroORM\Traits;
 
 
 use Closure;

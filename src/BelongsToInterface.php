@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
-use Dusan\PhpMvc\Database\Relations\BelongsTo;
+use Dusan\MicroORM\Relations\BelongsTo;
 
 interface BelongsToInterface
 {

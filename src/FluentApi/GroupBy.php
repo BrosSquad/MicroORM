@@ -1,9 +1,9 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\FluentApi;
+namespace Dusan\MicroORM\FluentApi;
 
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\MicroORM\Model;
 use stdClass;
 
 class GroupBy extends Fluent

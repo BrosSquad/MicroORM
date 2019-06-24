@@ -3,11 +3,11 @@
  * Copyright (c) 2019. Dusan Malusev
  */
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
-use Dusan\PhpMvc\Database\Traits\MemberWithDash;
-use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
+use Dusan\MicroORM\Traits\MemberWithDash;
+use Dusan\MicroORM\Exceptions\PropertyNotFound;
 
 abstract class AbstractModel
 {
@@ -17,7 +17,7 @@ abstract class AbstractModel
      * @param string $name
      *
      * @return mixed
-     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
+     * @throws \Dusan\MicroORM\Exceptions\PropertyNotFound
      */
     public function __get(string $name)
     {
@@ -36,7 +36,7 @@ abstract class AbstractModel
      * @param string $name
      * @param mixed  $value
      *
-     * @throws \Dusan\PhpMvc\Database\Exceptions\PropertyNotFound
+     * @throws \Dusan\MicroORM\Exceptions\PropertyNotFound
      */
     public function __set(string $name, $value)
     {

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Traits;
+namespace Dusan\MicroORM\Traits;
 
 
-use Dusan\PhpMvc\Database\Drivers\Database;
+use Dusan\MicroORM\Drivers\Database;
 use Error;
 
 trait Exists

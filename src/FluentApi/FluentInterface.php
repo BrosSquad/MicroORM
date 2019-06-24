@@ -1,9 +1,9 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\FluentApi;
+namespace Dusan\MicroORM\FluentApi;
 
 
-use Dusan\PhpMvc\Database\Driver;
+use Dusan\MicroORM\Driver;
 
 /**
  * Class Fluent
@@ -13,7 +13,7 @@ use Dusan\PhpMvc\Database\Driver;
  * GROUP BY
  * Mysql syntax is only supported
  *
- * @package Dusan\PhpMvc\Database\FluentApi
+ * @package Dusan\MicroORM\FluentApi
  * @author  Dusan Malusev
  * @version 1.0
  */

@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 use Carbon\CarbonImmutable;
-use Dusan\PhpMvc\Database\Actions\Delete;
-use Dusan\PhpMvc\Database\Actions\Save;
-use Dusan\PhpMvc\Database\Exceptions\MethodNotFound;
-use Dusan\PhpMvc\Database\Exceptions\PropertyNotFound;
-use Dusan\PhpMvc\Database\FluentApi\Fluent;
-use Dusan\PhpMvc\Database\Traits\Exists;
-use Dusan\PhpMvc\Database\Traits\Lockable;
+use Dusan\MicroORM\Actions\Delete;
+use Dusan\MicroORM\Actions\Save;
+use Dusan\MicroORM\Exceptions\MethodNotFound;
+use Dusan\MicroORM\Exceptions\PropertyNotFound;
+use Dusan\MicroORM\FluentApi\Fluent;
+use Dusan\MicroORM\Traits\Exists;
+use Dusan\MicroORM\Traits\Lockable;
 use Exception;
 use JsonSerializable;
 use Serializable;
@@ -188,7 +188,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * @param $name
      * @param $arguments
      *
-     * @return \Dusan\PhpMvc\Database\DatabaseModel|Fluent|null|void
+     * @return \Dusan\MicroORM\DatabaseModel|Fluent|null|void
      * @throws \Exception
      */
     public static function __callStatic($name, $arguments)

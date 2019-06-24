@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Relations;
+namespace Dusan\MicroORM\Relations;
 
 /**
  * Class OneToMany
  * @author Dusan Malusev<dusan.998@outlook.com>
- * @package Dusan\PhpMvc\Database\Relations
+ * @package Dusan\MicroORM\Relations
  * @internal
  */
 abstract class OneToMany implements Relation

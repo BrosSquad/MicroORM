@@ -12,12 +12,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "Dusan\\PhpMvc\\Database\\": "src/"
+      "Dusan\\MicroORM\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Dusan\\PhpMvc\\Tests\\Database\\": "tests/"
+      "Dusan\\MicroORM\\Tests": "tests/"
     }
   },
   "require": {

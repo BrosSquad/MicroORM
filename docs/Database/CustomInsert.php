@@ -1,7 +1,7 @@
 <?php
 
-use Dusan\PhpMvc\Database\CustomInsert;
-use Dusan\PhpMvc\Database\Model;
+use Dusan\MicroORM\CustomInsert;
+use Dusan\MicroORM\Model;
 
 class User extends Model implements CustomInsert
 {

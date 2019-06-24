@@ -1,10 +1,10 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\Drivers;
+namespace Dusan\MicroORM\Drivers;
 
 use Closure;
-use Dusan\PhpMvc\Database\{DatabaseModel, Driver, Model};
-use Dusan\PhpMvc\Database\Traits\{DbToObject, MemberWithDash, ObjectToDb};
+use Dusan\MicroORM\{DatabaseModel, Driver, Model};
+use Dusan\MicroORM\Traits\{DbToObject, MemberWithDash, ObjectToDb};
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -13,7 +13,7 @@ use RuntimeException;
 /**
  * Database Connection class fo MySql driver
  *
- * @package Dusan\PhpMvc\Database
+ * @package Dusan\MicroORM
  * @author  Dusan Malusev
  * @version 2.0
  */

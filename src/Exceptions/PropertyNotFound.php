@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Exceptions;
+namespace Dusan\MicroORM\Exceptions;
 
 
 use Error;

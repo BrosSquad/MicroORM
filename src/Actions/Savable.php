@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Actions;
+namespace Dusan\MicroORM\Actions;
 
 
 interface Savable

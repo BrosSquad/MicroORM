@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
 use Closure;
@@ -11,7 +11,7 @@ use PDOException;
  * Database Connection class
  * <b>To change api of this class extend it and change the internals</b>
  *
- * @package Dusan\PhpMvc\Database
+ * @package Dusan\MicroORM
  * @author  Dusan Malusev
  * @version 2.0
  */
@@ -51,7 +51,7 @@ interface Driver
      * This method bind values from the object by the reference so it allows last minute changes
      * Actual parameters are bound when the execute method is called on the Database object
      *
-     * @param \Dusan\PhpMvc\Database\DatabaseModel $model
+     * @param \Dusan\MicroORM\DatabaseModel $model
      * @param array                                $bindings
      * @param int[]                                $memberBind
      *

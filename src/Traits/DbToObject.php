@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Traits;
+namespace Dusan\MicroORM\Traits;
 
 
 use TypeError;
@@ -33,7 +33,7 @@ trait DbToObject
                 case 'object':
                 case 'null':
                 default:
-                    /** @var \Dusan\PhpMvc\Database\BindFromDatabase $bind */
+                    /** @var \Dusan\MicroORM\BindFromDatabase $bind */
                     $bind = self::$customBind[get_class($property ?? 0) !== false ?: ''] ?? NULL;
 
                     if ($bind === NULL) {

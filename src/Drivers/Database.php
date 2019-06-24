@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Drivers;
+namespace Dusan\MicroORM\Drivers;
 
 
-use Dusan\PhpMvc\Database\BindFromDatabase;
-use Dusan\PhpMvc\Database\BindToDatabase;
-use Dusan\PhpMvc\Database\Driver;
+use Dusan\MicroORM\BindFromDatabase;
+use Dusan\MicroORM\BindToDatabase;
+use Dusan\MicroORM\Driver;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -15,12 +15,12 @@ abstract class Database implements Driver
 {
 
     /**
-     * @var array<string,\Dusan\PhpMvc\Database\BindFromDatabase>
+     * @var array<string,\Dusan\MicroORM\BindFromDatabase>
      */
     protected static $customTypes = [];
 
     /**
-     * @var array<string, \Dusan\PhpMvc\Database\BindFromDatabase>
+     * @var array<string, \Dusan\MicroORM\BindFromDatabase>
      */
     protected static $customBind = [];
 
@@ -146,7 +146,7 @@ abstract class Database implements Driver
     /**
      * Binds value from the database to the object
      * @param string                                  $type
-     * @param \Dusan\PhpMvc\Database\BindFromDatabase $binding
+     * @param \Dusan\MicroORM\BindFromDatabase $binding
      */
     public static final function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding)
     {

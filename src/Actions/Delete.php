@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Actions;
+namespace Dusan\MicroORM\Actions;
 
 
-use Dusan\PhpMvc\Database\DatabaseModel;
-use Dusan\PhpMvc\Database\Driver;
+use Dusan\MicroORM\DatabaseModel;
+use Dusan\MicroORM\Driver;
 use PDOException;
 
 class Delete extends Action

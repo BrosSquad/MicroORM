@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
 interface BindFromDatabase

@@ -1,14 +1,14 @@
 <?php
 
-namespace Dusan\PhpMvc\Database\Events;
+namespace Dusan\MicroORM\Events;
 
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\MicroORM\Model;
 
 /**
  * Interface Observer
  *
- * @package Dusan\PhpMvc\Database\Events
+ * @package Dusan\MicroORM\Events
  */
 interface Observer
 {
@@ -40,7 +40,7 @@ interface Observer
     /**
      * This method runs when model is already updated
      *
-     * @param \Dusan\PhpMvc\Database\Model $model
+     * @param \Dusan\MicroORM\Model $model
      *
      * @return void
      */
@@ -49,7 +49,7 @@ interface Observer
     /**
      * This method runs when model is already deleted
      *
-     * @param \Dusan\PhpMvc\Database\Model $model
+     * @param \Dusan\MicroORM\Model $model
      *
      * @return void
      */

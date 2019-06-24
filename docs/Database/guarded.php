@@ -1,6 +1,6 @@
 <?php
 
-use Dusan\PhpMvc\Database\Model;
+use Dusan\MicroORM\Model;
 
 class User extends Model
 {

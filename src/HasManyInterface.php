@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database;
+namespace Dusan\MicroORM;
 
 
-use Dusan\PhpMvc\Database\Relations\HasMany;
+use Dusan\MicroORM\Relations\HasMany;
 
 interface HasManyInterface
 {
@@ -12,7 +12,7 @@ interface HasManyInterface
      * @param string $table
      * @param string $foreignKey
      *
-     * @return \Dusan\PhpMvc\Database\Relations\HasMany
+     * @return \Dusan\MicroORM\Relations\HasMany
      */
     public function hashMany(string $table, string $foreignKey): HasMany;
 }

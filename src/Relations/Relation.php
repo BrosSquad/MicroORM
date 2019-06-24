@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Relations;
+namespace Dusan\MicroORM\Relations;
 
 /**
  * Interface Relation
  * @api
- * @package Dusan\PhpMvc\Database\Relations
+ * @package Dusan\MicroORM\Relations
  */
 interface Relation
 {

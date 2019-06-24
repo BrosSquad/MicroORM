@@ -1,17 +1,17 @@
 <?php
 
 
-namespace Dusan\PhpMvc\Database\Actions;
+namespace Dusan\MicroORM\Actions;
 
 
-use Dusan\PhpMvc\Database\DatabaseModel;
-use Dusan\PhpMvc\Database\Driver;
+use Dusan\MicroORM\DatabaseModel;
+use Dusan\MicroORM\Driver;
 
 abstract class Action implements Savable
 {
 
     /**
-     * @var \Dusan\PhpMvc\Database\DatabaseModel
+     * @var \Dusan\MicroORM\DatabaseModel
      */
     protected $dbModel;
 
@@ -36,7 +36,7 @@ abstract class Action implements Savable
     protected $customSql;
 
     /**
-     * @var \Dusan\PhpMvc\Database\Driver
+     * @var \Dusan\MicroORM\Driver
      */
     protected static $driver;
 
@@ -44,7 +44,7 @@ abstract class Action implements Savable
     /**
      * Save constructor.
      *
-     * @param \Dusan\PhpMvc\Database\DatabaseModel $dbModel
+     * @param \Dusan\MicroORM\DatabaseModel $dbModel
      * @param array                                $fields
      * @param string|null                          $customSql
      */
