@@ -24,7 +24,7 @@ class Delete extends Action
     public function save(): bool
     {
         try {
-            return self::$driver->transaction(function (Driver $driver) {
+            return static::$driver->transaction(function (Driver $driver) {
                 $driver->sql("DELETE FROM {$this->tableName} WHERE {$this->primaryKey}=:{$this->primaryKey}")
                     ->bindValue(':' . $this->primaryKey, $this->id)
                     ->execute();

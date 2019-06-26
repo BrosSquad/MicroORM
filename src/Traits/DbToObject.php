@@ -34,7 +34,7 @@ trait DbToObject
                 case 'null':
                 default:
                     /** @var \Dusan\MicroORM\BindFromDatabase $bind */
-                    $bind = self::$customBind[get_class($property ?? 0) !== false ?: ''] ?? NULL;
+                    $bind = static::$customBind[get_class($property ?? 0) !== false ?: ''] ?? NULL;
 
                     if ($bind === NULL) {
                         $property = $value;

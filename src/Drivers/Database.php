@@ -146,7 +146,7 @@ abstract class Database implements Driver
      */
     public static function setCustomTypes(string $type, BindToDatabase $binding)
     {
-        self::$customTypes[$type] = $binding;
+        static::$customTypes[$type] = $binding;
     }
 
     /**
@@ -157,7 +157,7 @@ abstract class Database implements Driver
      */
     public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding)
     {
-        self::$customBind[$type] = $binding;
+        static::$customBind[$type] = $binding;
     }
 
 
@@ -168,7 +168,7 @@ abstract class Database implements Driver
      */
     public static function setFetchMode(int $fetchMode): void
     {
-        self::$fetchMode = $fetchMode;
+        static::$fetchMode = $fetchMode;
     }
 
     /**

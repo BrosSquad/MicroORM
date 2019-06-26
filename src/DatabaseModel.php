@@ -101,7 +101,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __construct(array $properties = [])
     {
-        $this->table = self::setTable();
+        $this->table = static::setTable();
         $this->guardedFields();
         $this->protectedFields();
         $this->guarded = array_flip($this->guarded);
@@ -176,7 +176,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function getPrimaryKeyName()
     {
-        return self::PRIMARY_KEY;
+        return static::PRIMARY_KEY;
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         switch ($name) {
             case 'delete':
                 $instance = new static();
-                self::deleteOnStatic($instance, $arguments[0]);
+                static::deleteOnStatic($instance, $arguments[0]);
                 break;
             default:
                 throw new Exception('Method is not found');
@@ -290,14 +290,14 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
                 }
             }
         }
-        if (property_exists($this, self::UPDATED_AT)) {
-            $this->{self::CREATED_AT} = CarbonImmutable::now();
-            $bindings[self::CREATED_AT] = ':' . self::CREATED_AT;
+        if (property_exists($this, static::UPDATED_AT)) {
+            $this->{static::CREATED_AT} = CarbonImmutable::now();
+            $bindings[static::CREATED_AT] = ':' . static::CREATED_AT;
         }
         $save = new Save($this, $bindings, true, $sql ?? NULL);
-        if(self::$observer) self::$observer->creating();
+        if(static::$observer) static::$observer->creating();
         $insert = $save->save();
-        if($insert && self::$observer) self::$observer->created($this);
+        if($insert && static::$observer) static::$observer->created($this);
         return $insert;
     }
 
@@ -314,19 +314,22 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings = $this->setUpdateBindings();
         } else {
             $bindings = $this->changed;
-            $bindings[self::PRIMARY_KEY] = ':' . self::PRIMARY_KEY;
+            $bindings[static::PRIMARY_KEY] = ':' . static::PRIMARY_KEY;
         }
-        if (property_exists($this, self::UPDATED_AT)) {
-            $this->{self::UPDATED_AT} = CarbonImmutable::now();
-            $bindings[self::UPDATED_AT] = ':' . self::UPDATED_AT;
+        if (property_exists($this, static::UPDATED_AT)) {
+            $this->{static::UPDATED_AT} = CarbonImmutable::now();
+            $bindings[static::UPDATED_AT] = ':' . static::UPDATED_AT;
         }
         $save = new Save($this, $bindings, false, $sql ?? NULL);
-        if(self::$observer) self::$observer->updating();
+        if(static::$observer) static::$observer->updating();
         $update =  $save->save();
-        if($update && self::$observer) self::$observer->created($this);
+        if($update && static::$observer) static::$observer->created($this);
         return $update;
     }
 
+    /**
+     * @return bool
+     */
     public function save()
     {
         if ($this->modelExists) {
@@ -335,30 +338,44 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         return $this->insert();
     }
 
+    /**
+     * @return bool
+     */
     protected function deleteOnInstance(): bool
     {
-        $delete = new Delete($this, [], $this->{self::PRIMARY_KEY});
-        if(self::$observer) self::$observer->deleting();
+        $delete = new Delete($this, [], $this->{static::PRIMARY_KEY});
+        if(static::$observer) static::$observer->deleting();
         $deleted = $delete->save();
-        if($deleted && self::$observer) self::$observer->deleted($this);
+        if($deleted && static::$observer) static::$observer->deleted($this);
         return $deleted;
     }
 
+    /**
+     * @param \Dusan\MicroORM\DatabaseModel $model
+     * @param                               $id
+     *
+     * @return bool
+     */
     protected static function deleteOnStatic(DatabaseModel $model, $id)
     {
         $delete = new Delete($model, [], $id);
-        if(self::$observer) self::$observer->deleting();
+        if(static::$observer) static::$observer->deleting();
         $deleted = $delete->save();
-        if($deleted && self::$observer) self::$observer->created($model);
+        if($deleted && static::$observer) static::$observer->created($model);
         return $deleted;
     }
 
-
+    /**
+     * @return string
+     */
     public function getAlias(): string
     {
         return $this->tableAlias;
     }
 
+    /**
+     * @return string
+     */
     public function getClass(): string
     {
         if ($this->calledClass === NULL) {

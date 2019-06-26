@@ -12,6 +12,6 @@ trait Observable
     protected static $observer = NULL;
 
     public static function setObserver(Observer $observer) {
-        self::$observer = $observer;
+        static::$observer = $observer;
     }
 }

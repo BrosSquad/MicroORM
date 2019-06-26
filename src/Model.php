@@ -27,7 +27,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      */
     public final function hashMany(string $table, string $foreignKey): HasMany
     {
-        return new HasMany($this->getTable(), self::PRIMARY_KEY, $table, $foreignKey);
+        return new HasMany($this->getTable(), static::PRIMARY_KEY, $table, $foreignKey);
     }
 
     /**
@@ -38,7 +38,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      */
     public final function belongsTo(string $table, string $foreignKey): BelongsTo
     {
-        return new BelongsTo($this->getTable(), self::PRIMARY_KEY, $table, $foreignKey);
+        return new BelongsTo($this->getTable(), static::PRIMARY_KEY, $table, $foreignKey);
     }
 
 
@@ -71,7 +71,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
                 if(count($arguments) !== 1) {
                     throw new ArgumentCountError('Not enough arguments passed to the method');
                 }
-                return self::deleteOnStatic($instance, $arguments[0]);
+                return static::deleteOnStatic($instance, $arguments[0]);
             default:
                 return parent::__callStatic($name, $arguments);
         }
@@ -119,7 +119,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
     protected function find( $id, $select = ['*']): ?Model
     {
         return $this->query()
-            ->where(self::PRIMARY_KEY, '=', $id)
+            ->where(static::PRIMARY_KEY, '=', $id)
             ->select($select)
             ->get();
     }

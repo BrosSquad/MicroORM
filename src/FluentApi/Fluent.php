@@ -431,6 +431,6 @@ class Fluent implements FluentInterface
 
     public static function setDatabase(Driver $database): void
     {
-        self::$database = $database;
+        static::$database = $database;
     }
 }

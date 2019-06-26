@@ -59,6 +59,6 @@ abstract class Action implements Savable
 
     public static function setDatabaseDriver(Driver $driver)
     {
-        self::$driver = $driver;
+        static::$driver = $driver;
     }
 }

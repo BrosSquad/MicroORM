@@ -78,7 +78,7 @@ class Save extends Action
      */
     protected function insert()
     {
-        return self::$driver->transaction(function (Driver $driver) {
+        return static::$driver->transaction(function (Driver $driver) {
             $driver->sql($this->generateInsertStatement());
             foreach ($this->fields as $name => $bind) {
                 $driver->bindValue($bind, $this->dbModel->{$name});
@@ -100,7 +100,7 @@ class Save extends Action
             return;
         }
 
-        self::$driver->transaction(function (Driver $driver) {
+        static::$driver->transaction(function (Driver $driver) {
             $driver->sql($this->generateUpdateStatement());
 
             foreach ($this->fields as $name => $bind) {
