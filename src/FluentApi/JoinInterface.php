@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
 interface JoinInterface
 {

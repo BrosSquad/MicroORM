@@ -1,8 +1,8 @@
 <?php
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
-use Dusan\MicroORM\{Driver, Model, Relations\Relation, Traits\Random};
+use BrosSquad\MicroORM\{Driver, Model, Relations\Relation, Traits\Random};
 use Dusan\PhpMvc\Collections\Collection;
 use PDO;
 use stdClass;
@@ -15,9 +15,9 @@ use stdClass;
  * Mysql syntax is only supported
  * TODO: Check ? and : bind parameters in single sql statement
  *
- * @package Dusan\MicroORM\FluentApi
+ * @package BrosSquad\MicroORM\FluentApi
  * @author  Dusan Malusev
- * @see     \Dusan\MicroORM\DatabaseModelOLD
+ * @see     \BrosSquad\MicroORM\DatabaseModelOLD
  * @version 2.0
  */
 class Fluent implements FluentInterface
@@ -151,7 +151,7 @@ class Fluent implements FluentInterface
      *
      * @param array $select
      *
-     * @return \Dusan\MicroORM\FluentApi\Fluent
+     * @return \BrosSquad\MicroORM\FluentApi\Fluent
      */
     public function select($select = ['*']): Fluent
     {

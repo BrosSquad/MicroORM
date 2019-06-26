@@ -5,13 +5,13 @@ namespace Dusan\MicroORM;
 
 
 use ArgumentCountError;
-use Dusan\MicroORM\Drivers\Database;
-use Dusan\MicroORM\FluentApi\AdvancedFluent;
-use Dusan\MicroORM\FluentApi\AdvancedFluentInterface;
-use Dusan\MicroORM\FluentApi\Fluent;
-use Dusan\MicroORM\FluentApi\FluentInterface;
-use Dusan\MicroORM\Relations\BelongsTo;
-use Dusan\MicroORM\Relations\HasMany;
+use BrosSquad\MicroORM\Drivers\Database;
+use BrosSquad\MicroORM\FluentApi\AdvancedFluent;
+use BrosSquad\MicroORM\FluentApi\AdvancedFluentInterface;
+use BrosSquad\MicroORM\FluentApi\Fluent;
+use BrosSquad\MicroORM\FluentApi\FluentInterface;
+use BrosSquad\MicroORM\Relations\BelongsTo;
+use BrosSquad\MicroORM\Relations\HasMany;
 
 /**
  * @method setExists(Database $param, bool $true)
@@ -23,7 +23,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @param string $table
      * @param string $foreignKey
      * @api
-     * @return \Dusan\MicroORM\Relations\HasMany
+     * @return \BrosSquad\MicroORM\Relations\HasMany
      */
     public final function hashMany(string $table, string $foreignKey): HasMany
     {
@@ -34,7 +34,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @param string $table
      * @param string $foreignKey
      * @api
-     * @return \Dusan\MicroORM\Relations\BelongsTo
+     * @return \BrosSquad\MicroORM\Relations\BelongsTo
      */
     public final function belongsTo(string $table, string $foreignKey): BelongsTo
     {
@@ -81,7 +81,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * Returns all records from the database based on the given filtering
      *
      * @api
-     * @return \Dusan\MicroORM\FluentApi\AdvancedFluentInterface
+     * @return \BrosSquad\MicroORM\FluentApi\AdvancedFluentInterface
      * @example "../../docs/Database/query.php"
      * @see     Fluent
      */
@@ -95,8 +95,8 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
 
     /**
      * @api
-     * @see \Dusan\MicroORM\Model::query()
-     * @return \Dusan\MicroORM\FluentApi\FluentInterface
+     * @see \BrosSquad\MicroORM\Model::query()
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
      */
     protected function fluent() : FluentInterface {
         return new Fluent(

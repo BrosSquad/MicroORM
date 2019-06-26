@@ -1,7 +1,7 @@
 <?php
 
-use Dusan\MicroORM\CustomInsert;
-use Dusan\MicroORM\Model;
+use BrosSquad\MicroORM\CustomInsert;
+use BrosSquad\MicroORM\Model;
 
 class User extends Model implements CustomInsert
 {

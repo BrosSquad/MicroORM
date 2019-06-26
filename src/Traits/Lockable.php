@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\Traits;
+namespace BrosSquad\MicroORM\Traits;
 
 
 use Closure;

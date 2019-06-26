@@ -4,7 +4,7 @@
 namespace Dusan\MicroORM;
 
 
-use Dusan\MicroORM\Relations\BelongsTo;
+use BrosSquad\MicroORM\Relations\BelongsTo;
 
 interface BelongsToInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Dusan\MicroORM\Drivers;
+namespace BrosSquad\MicroORM\Drivers;
 
 use Closure;
-use Dusan\MicroORM\{BindFromDatabase, BindToDatabase, DatabaseModel, Driver, Model};
-use Dusan\MicroORM\Traits\{DbToObject, MemberWithDash, ObjectToDb};
+use BrosSquad\MicroORM\{BindFromDatabase, BindToDatabase, DatabaseModel, Driver, Model};
+use BrosSquad\MicroORM\Traits\{DbToObject, MemberWithDash, ObjectToDb};
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -20,12 +20,12 @@ abstract class Database implements Driver
     use DbToObject;
 
     /**
-     * @var array<string,\Dusan\MicroORM\BindFromDatabase>
+     * @var array<string,\BrosSquad\MicroORM\BindFromDatabase>
      */
     protected static $customTypes = [];
 
     /**
-     * @var array<string, \Dusan\MicroORM\BindFromDatabase>
+     * @var array<string, \BrosSquad\MicroORM\BindFromDatabase>
      */
     protected static $customBind = [];
 
@@ -153,7 +153,7 @@ abstract class Database implements Driver
      * Binds value from the database to the object
      *
      * @param string                           $type
-     * @param \Dusan\MicroORM\BindFromDatabase $binding
+     * @param \BrosSquad\MicroORM\BindFromDatabase $binding
      */
     public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding)
     {

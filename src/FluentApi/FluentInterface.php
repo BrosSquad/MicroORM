@@ -1,9 +1,9 @@
 <?php
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
 
-use Dusan\MicroORM\Driver;
+use BrosSquad\MicroORM\Driver;
 
 /**
  * Class Fluent
@@ -13,7 +13,7 @@ use Dusan\MicroORM\Driver;
  * GROUP BY
  * Mysql syntax is only supported
  *
- * @package Dusan\MicroORM\FluentApi
+ * @package BrosSquad\MicroORM\FluentApi
  * @author  Dusan Malusev
  * @version 1.0
  */

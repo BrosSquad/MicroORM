@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\Drivers;
+namespace BrosSquad\MicroORM\Drivers;
 
 
 class SqlServerDatabase extends Database

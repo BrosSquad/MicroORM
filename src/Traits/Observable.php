@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Dusan\MicroORM\Traits;
+namespace BrosSquad\MicroORM\Traits;
 
 
-use Dusan\MicroORM\Events\Observer;
+use BrosSquad\MicroORM\Events\Observer;
 
 trait Observable
 {
-    /** @var \Dusan\MicroORM\Events\Observer|NULL */
+    /** @var \BrosSquad\MicroORM\Events\Observer|NULL */
     protected static $observer = NULL;
 
     public static function setObserver(Observer $observer) {

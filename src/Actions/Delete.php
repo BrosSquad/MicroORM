@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Dusan\MicroORM\Actions;
+namespace BrosSquad\MicroORM\Actions;
 
 
-use Dusan\MicroORM\DatabaseModel;
-use Dusan\MicroORM\Driver;
+use BrosSquad\MicroORM\DatabaseModel;
+use BrosSquad\MicroORM\Driver;
 use PDOException;
 
 class Delete extends Action

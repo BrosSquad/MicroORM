@@ -51,7 +51,7 @@ interface Driver
      * This method bind values from the object by the reference so it allows last minute changes
      * Actual parameters are bound when the execute method is called on the Database object
      *
-     * @param \Dusan\MicroORM\DatabaseModel $model
+     * @param \BrosSquad\MicroORM\DatabaseModel $model
      * @param array                                $bindings
      * @param int[]                                $memberBind
      *
@@ -200,7 +200,7 @@ interface Driver
      * Binds value from the database to the object
      *
      * @param string                           $type
-     * @param \Dusan\MicroORM\BindFromDatabase $binding
+     * @param \BrosSquad\MicroORM\BindFromDatabase $binding
      */
     public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding);
 

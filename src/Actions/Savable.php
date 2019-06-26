@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\Actions;
+namespace BrosSquad\MicroORM\Actions;
 
 
 interface Savable

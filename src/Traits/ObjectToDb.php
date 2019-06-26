@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\MicroORM\Traits;
+namespace BrosSquad\MicroORM\Traits;
 
 
-use Dusan\MicroORM\BindToDatabase;
+use BrosSquad\MicroORM\BindToDatabase;
 use PDO;
 
 trait ObjectToDb

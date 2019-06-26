@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Dusan\MicroORM\Actions;
+namespace BrosSquad\MicroORM\Actions;
 
 
-use Dusan\MicroORM\DatabaseModel;
-use Dusan\MicroORM\Driver;
+use BrosSquad\MicroORM\DatabaseModel;
+use BrosSquad\MicroORM\Driver;
 use PDOException;
 
 class Save extends Action
@@ -18,7 +18,7 @@ class Save extends Action
     /**
      * Save constructor.
      *
-     * @param \Dusan\MicroORM\DatabaseModel $dbModel
+     * @param \BrosSquad\MicroORM\DatabaseModel $dbModel
      * @param array                                $fields
      * @param bool                                 $isInsert
      * @param string|null                          $customSql

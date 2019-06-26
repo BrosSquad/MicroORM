@@ -1,17 +1,17 @@
 <?php
 
 
-namespace Dusan\MicroORM\Actions;
+namespace BrosSquad\MicroORM\Actions;
 
 
-use Dusan\MicroORM\DatabaseModel;
-use Dusan\MicroORM\Driver;
+use BrosSquad\MicroORM\DatabaseModel;
+use BrosSquad\MicroORM\Driver;
 
 abstract class Action implements Savable
 {
 
     /**
-     * @var \Dusan\MicroORM\DatabaseModel
+     * @var \BrosSquad\MicroORM\DatabaseModel
      */
     protected $dbModel;
 
@@ -36,7 +36,7 @@ abstract class Action implements Savable
     protected $customSql;
 
     /**
-     * @var \Dusan\MicroORM\Driver
+     * @var \BrosSquad\MicroORM\Driver
      */
     protected static $driver;
 
@@ -44,7 +44,7 @@ abstract class Action implements Savable
     /**
      * Save constructor.
      *
-     * @param \Dusan\MicroORM\DatabaseModel $dbModel
+     * @param \BrosSquad\MicroORM\DatabaseModel $dbModel
      * @param array                                $fields
      * @param string|null                          $customSql
      */

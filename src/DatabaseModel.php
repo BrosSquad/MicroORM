@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Dusan\MicroORM;
 
 use Carbon\CarbonImmutable;
-use Dusan\MicroORM\Actions\{Delete, Save};
-use Dusan\MicroORM\Exceptions\{MethodNotFound, PropertyNotFound};
-use Dusan\MicroORM\Traits\{Exists, Lockable, Observable};
-use Dusan\MicroORM\FluentApi\Fluent;
+use BrosSquad\MicroORM\Actions\{Delete, Save};
+use BrosSquad\MicroORM\Exceptions\{MethodNotFound, PropertyNotFound};
+use BrosSquad\MicroORM\Traits\{Exists, Lockable, Observable};
+use BrosSquad\MicroORM\FluentApi\Fluent;
 use Exception;
 use JsonSerializable;
 use Serializable;
@@ -187,7 +187,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * @param $name
      * @param $arguments
      *
-     * @return \Dusan\MicroORM\DatabaseModel|Fluent|null|void
+     * @return \BrosSquad\MicroORM\DatabaseModel|Fluent|null|void
      * @throws \Exception
      */
     public static function __callStatic($name, $arguments)

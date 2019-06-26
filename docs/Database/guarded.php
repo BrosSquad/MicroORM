@@ -1,6 +1,6 @@
 <?php
 
-use Dusan\MicroORM\Model;
+use BrosSquad\MicroORM\Model;
 
 class User extends Model
 {

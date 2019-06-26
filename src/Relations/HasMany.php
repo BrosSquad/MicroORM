@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\Relations;
+namespace BrosSquad\MicroORM\Relations;
 
 /**
  * Class HasMany
@@ -9,7 +9,7 @@ namespace Dusan\MicroORM\Relations;
  * if you need Many-To-Many relation, make two One-To-Many relations to the binding table
  * @example "../../../docs/Database/hasMany.php"
  * @author Dusan Malusev<dusan.998@outlook.com>
- * @package Dusan\MicroORM\Relations
+ * @package BrosSquad\MicroORM\Relations
  */
 class HasMany extends OneToMany
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
 
 use PDO;
@@ -15,7 +15,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
      * @param string $column
      * @param string $term
      *
-     * @return \Dusan\MicroORM\FluentApi\FluentInterface
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
      */
     public function search(string $column, string $term): FluentInterface
     {
@@ -27,7 +27,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
      *
      * @param string $term
      *
-     * @return \Dusan\MicroORM\FluentApi\FluentInterface
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
      */
     public function fullTextSearch(string $term): FluentInterface
     {
@@ -41,7 +41,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
      * @param string                $column
      * @param float|int|string|null $value
      *
-     * @return \Dusan\MicroORM\FluentApi\FluentInterface
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
      */
     public function whereEquals(string $column, $value): FluentInterface
     {
@@ -114,7 +114,7 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
      * @param string                $column
      * @param float|int|string|null $value
      *
-     * @return \Dusan\MicroORM\FluentApi\FluentInterface
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
      */
     public function whereNotEquals(string $column, $value): FluentInterface
     {

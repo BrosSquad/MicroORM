@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\MicroORM\Drivers;
+namespace BrosSquad\MicroORM\Drivers;
 
 
 

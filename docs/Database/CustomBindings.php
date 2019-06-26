@@ -2,8 +2,8 @@
 
 
 use Dusan\PhpMvc\Collections\Set;
-use Dusan\MicroORM\BindToDatabase;
-use Dusan\MicroORM\Driver;
+use BrosSquad\MicroORM\BindToDatabase;
+use BrosSquad\MicroORM\Driver;
 
 class CustomBind implements BindToDatabase
 {

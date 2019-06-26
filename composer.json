@@ -1,5 +1,5 @@
 {
-  "name": "dusan/micro-orm",
+  "name": "brossquad/micro-orm",
   "license": "GPL-2.0",
   "minimum-stability": "stable",
   "description": "Database package for PhpMvc framework",
@@ -12,12 +12,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "Dusan\\MicroORM\\": "src/"
+      "BrosSquad\\MicroORM\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Dusan\\MicroORM\\Tests": "tests/"
+      "BrosSquad\\MicroORM\\Tests": "tests/"
     }
   },
   "require": {

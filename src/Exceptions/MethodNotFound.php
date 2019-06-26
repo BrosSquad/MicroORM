@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM\Exceptions;
+namespace BrosSquad\MicroORM\Exceptions;
 
 
 use Error;

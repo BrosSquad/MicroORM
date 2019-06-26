@@ -1,7 +1,7 @@
 <?php
 
-use Dusan\MicroORM\CustomUpdate;
-use Dusan\MicroORM\Model;
+use BrosSquad\MicroORM\CustomUpdate;
+use BrosSquad\MicroORM\Model;
 
 class User extends Model implements CustomUpdate
 {

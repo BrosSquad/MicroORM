@@ -6,8 +6,8 @@
 namespace Dusan\MicroORM;
 
 
-use Dusan\MicroORM\Traits\MemberWithDash;
-use Dusan\MicroORM\Exceptions\PropertyNotFound;
+use BrosSquad\MicroORM\Traits\MemberWithDash;
+use BrosSquad\MicroORM\Exceptions\PropertyNotFound;
 
 abstract class AbstractModel
 {
@@ -17,7 +17,7 @@ abstract class AbstractModel
      * @param string $name
      *
      * @return mixed
-     * @throws \Dusan\MicroORM\Exceptions\PropertyNotFound
+     * @throws \BrosSquad\MicroORM\Exceptions\PropertyNotFound
      */
     public function __get(string $name)
     {
@@ -36,7 +36,7 @@ abstract class AbstractModel
      * @param string $name
      * @param mixed  $value
      *
-     * @throws \Dusan\MicroORM\Exceptions\PropertyNotFound
+     * @throws \BrosSquad\MicroORM\Exceptions\PropertyNotFound
      */
     public function __set(string $name, $value)
     {

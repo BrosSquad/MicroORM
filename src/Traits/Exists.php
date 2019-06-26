@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Dusan\MicroORM\Traits;
+namespace BrosSquad\MicroORM\Traits;
 
 
-use Dusan\MicroORM\Drivers\Database;
+use BrosSquad\MicroORM\Drivers\Database;
 use Error;
 
 trait Exists

@@ -4,7 +4,7 @@
 namespace Dusan\MicroORM;
 
 
-use Dusan\MicroORM\Relations\HasMany;
+use BrosSquad\MicroORM\Relations\HasMany;
 
 interface HasManyInterface
 {
@@ -12,7 +12,7 @@ interface HasManyInterface
      * @param string $table
      * @param string $foreignKey
      *
-     * @return \Dusan\MicroORM\Relations\HasMany
+     * @return \BrosSquad\MicroORM\Relations\HasMany
      */
     public function hashMany(string $table, string $foreignKey): HasMany;
 }

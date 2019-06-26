@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Dusan\MicroORM\Relations;
+namespace BrosSquad\MicroORM\Relations;
 
 /**
  * Class BelongsTo
  * Use this class to define the relations between models
  * if you need Many-To-Many relation, make two One-To-Many relations to the binding table
  * @example "../../../docs/Database/belongsToMany.php"
- * @package Dusan\MicroORM\Relations
+ * @package BrosSquad\MicroORM\Relations
  * @author Dusan Malusev<dusan.998@outlook.com>
  */
 class BelongsTo extends OneToMany

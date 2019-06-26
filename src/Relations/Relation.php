@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Dusan\MicroORM\Relations;
+namespace BrosSquad\MicroORM\Relations;
 
 /**
  * Interface Relation
  * @api
- * @package Dusan\MicroORM\Relations
+ * @package BrosSquad\MicroORM\Relations
  */
 interface Relation
 {

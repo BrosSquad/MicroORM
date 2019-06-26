@@ -1,8 +1,8 @@
 <?php
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
-use Dusan\MicroORM\Model;
+use BrosSquad\MicroORM\Model;
 use stdClass;
 
 class Where extends Fluent

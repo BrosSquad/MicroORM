@@ -1,9 +1,9 @@
 <?php
 
-namespace Dusan\MicroORM\FluentApi;
+namespace BrosSquad\MicroORM\FluentApi;
 
 
-use Dusan\MicroORM\Model;
+use BrosSquad\MicroORM\Model;
 
 class Join extends Fluent implements JoinInterface
 {
