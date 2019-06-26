@@ -1,5 +1,5 @@
 <?php
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 use Dusan\PhpMvc\Collections\Set;
@@ -8,7 +8,7 @@ use Dusan\PhpMvc\Collections\Set;
  * Interface BindToDatabase
  *
  * @example "../docs/Database/CustomBindings.php"
- * @package Dusan\MicroORM
+ * @package BrosSquad\MicroORM
  */
 interface BindToDatabase
 {

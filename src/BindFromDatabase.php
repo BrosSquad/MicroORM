@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 interface BindFromDatabase

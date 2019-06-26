@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 use Closure;
@@ -11,7 +11,7 @@ use PDOException;
  * Database Connection class
  * <b>To change api of this class extend it and change the internals</b>
  *
- * @package Dusan\MicroORM
+ * @package BrosSquad\MicroORM
  * @author  Dusan Malusev
  * @version 2.0
  */

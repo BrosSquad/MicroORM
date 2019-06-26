@@ -1,6 +1,6 @@
 <?php
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 /**
@@ -12,7 +12,7 @@ namespace Dusan\MicroORM;
  * @api
  * @author Dusan Malusev <dusan.998@outlook.com>
  * @example "../../docs/CustomInsert.php"
- * @package Dusan\MicroORM
+ * @package BrosSquad\MicroORM
  */
 interface CustomInsert
 {

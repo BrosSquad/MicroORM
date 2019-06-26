@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 use BrosSquad\MicroORM\Relations\BelongsTo;

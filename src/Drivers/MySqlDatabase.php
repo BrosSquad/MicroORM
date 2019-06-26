@@ -7,7 +7,7 @@ namespace BrosSquad\MicroORM\Drivers;
 /**
  * Database Connection class fo MySql driver
  *
- * @package Dusan\MicroORM
+ * @package BrosSquad\MicroORM
  * @author  Dusan Malusev
  * @version 2.0
  */

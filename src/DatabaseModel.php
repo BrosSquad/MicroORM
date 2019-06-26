@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 use Carbon\CarbonImmutable;
 use BrosSquad\MicroORM\Actions\{Delete, Save};

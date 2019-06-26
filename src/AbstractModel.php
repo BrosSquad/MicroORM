@@ -3,7 +3,7 @@
  * Copyright (c) 2019. Dusan Malusev
  */
 
-namespace Dusan\MicroORM;
+namespace BrosSquad\MicroORM;
 
 
 use BrosSquad\MicroORM\Traits\MemberWithDash;
