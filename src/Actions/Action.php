@@ -48,13 +48,15 @@ abstract class Action implements Savable
      * @param array                                $fields
      * @param string|null                          $customSql
      */
-    public function __construct(DatabaseModel $dbModel, array $fields, ?string $customSql = NULL)
+    public function __construct(?DatabaseModel $dbModel, ?array $fields, ?string $customSql = NULL)
     {
         $this->dbModel = $dbModel;
         $this->fields = $fields;
-        $this->primaryKey = $this->dbModel->getPrimaryKeyName();
-        $this->customSql = $customSql;
-        $this->tableName = $this->dbModel->getTable();
+        if($dbModel != NULL) {
+            $this->primaryKey = $this->dbModel->getPrimaryKeyName();
+            $this->customSql = $customSql;
+            $this->tableName = $this->dbModel->getTable();
+        }
     }
 
     public static function setDatabaseDriver(Driver $driver)

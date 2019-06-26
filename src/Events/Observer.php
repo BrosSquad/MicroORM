@@ -49,9 +49,7 @@ interface Observer
     /**
      * This method runs when model is already deleted
      *
-     * @param \Dusan\MicroORM\DatabaseModel $model
-     *
      * @return void
      */
-    public function deleted(DatabaseModel $model): void;
+    public function deleted(): void;
 }

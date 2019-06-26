@@ -17,16 +17,17 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     use Lockable;
     use Exists;
     use Observable;
+
     /**
      * Name of column in database for primary key
      *
      * @var string
      */
-    const PRIMARY_KEY = 'id';
+    protected const PRIMARY_KEY = 'id';
 
-    const CREATED_AT = 'created_at';
+    protected const CREATED_AT = 'created_at';
 
-    const UPDATED_AT = 'updated_at';
+    protected const UPDATED_AT = 'updated_at';
 
     /**
      * @var null|array
@@ -51,7 +52,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      *
      * @var string
      */
-    protected $tableAlias = '';
+    protected static $TABLE_ALIAS = '';
 
     /**
      * Name of the table in the database
@@ -60,7 +61,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      *
      * @var string
      */
-    protected $table = '';
+    protected static $TABLE = NULL;
 
     /**
      * Guarded array restricts the Json serializes from showing
@@ -101,7 +102,11 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __construct(array $properties = [])
     {
-        $this->table = static::setTable();
+        if (static::$TABLE === NULL) {
+            static::$TABLE = static::setTable();
+        }
+
+
         $this->guardedFields();
         $this->protectedFields();
         $this->guarded = array_flip($this->guarded);
@@ -141,10 +146,8 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     {
         $this->guarded[] = 'changed';
         $this->guarded[] = 'lock';
-        $this->guarded[] = 'table';
         $this->guarded[] = 'variables';
         $this->guarded[] = 'calledClass';
-        $this->guarded[] = 'tableAlias';
         $this->guarded[] = 'protected';
         $this->guarded[] = 'guarded';
         $this->guarded[] = 'modelExists';
@@ -154,10 +157,8 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     {
         $this->protected[] = 'changed';
         $this->protected[] = 'lock';
-        $this->protected[] = 'table';
         $this->protected[] = 'variables';
         $this->protected[] = 'calledClass';
-        $this->protected[] = 'tableAlias';
         $this->protected[] = 'protected';
         $this->protected[] = 'guarded';
         $this->protected[] = 'modelExists';
@@ -171,7 +172,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function getTable(): string
     {
-        return $this->table;
+        return static::$TABLE;
     }
 
     public function getPrimaryKeyName()
@@ -193,8 +194,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     {
         switch ($name) {
             case 'delete':
-                $instance = new static();
-                static::deleteOnStatic($instance, $arguments[0]);
+                static::deleteOnStatic($arguments[0]);
                 break;
             default:
                 throw new Exception('Method is not found');
@@ -228,7 +228,11 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      */
     public function unserialize($serialized)
     {
-        // TODO: Implement unserialize() method.
+        /** @var array $unserialize */
+        $unserialize = unserialize($serialized);
+        foreach($unserialize as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     /**
@@ -295,9 +299,9 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings[static::CREATED_AT] = ':' . static::CREATED_AT;
         }
         $save = new Save($this, $bindings, true, $sql ?? NULL);
-        if(static::$observer) static::$observer->creating();
+        if (static::$observer) static::$observer->creating();
         $insert = $save->save();
-        if($insert && static::$observer) static::$observer->created($this);
+        if ($insert && static::$observer) static::$observer->created($this);
         return $insert;
     }
 
@@ -321,9 +325,9 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings[static::UPDATED_AT] = ':' . static::UPDATED_AT;
         }
         $save = new Save($this, $bindings, false, $sql ?? NULL);
-        if(static::$observer) static::$observer->updating();
-        $update =  $save->save();
-        if($update && static::$observer) static::$observer->created($this);
+        if (static::$observer) static::$observer->updating();
+        $update = $save->save();
+        if ($update && static::$observer) static::$observer->created($this);
         return $update;
     }
 
@@ -343,25 +347,24 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      */
     protected function deleteOnInstance(): bool
     {
-        $delete = new Delete($this, [], $this->{static::PRIMARY_KEY});
-        if(static::$observer) static::$observer->deleting();
+        $delete = new Delete($this->{static::PRIMARY_KEY}, static::$TABLE, static::PRIMARY_KEY);
+        if (static::$observer) static::$observer->deleting();
         $deleted = $delete->save();
-        if($deleted && static::$observer) static::$observer->deleted($this);
+        if ($deleted && static::$observer) static::$observer->deleted();
         return $deleted;
     }
 
     /**
-     * @param \Dusan\MicroORM\DatabaseModel $model
      * @param                               $id
      *
      * @return bool
      */
-    protected static function deleteOnStatic(DatabaseModel $model, $id)
+    protected static function deleteOnStatic($id)
     {
-        $delete = new Delete($model, [], $id);
-        if(static::$observer) static::$observer->deleting();
+        $delete = new Delete($id, static::$TABLE, static::PRIMARY_KEY);
+        if (static::$observer) static::$observer->deleting();
         $deleted = $delete->save();
-        if($deleted && static::$observer) static::$observer->created($model);
+        if ($deleted && static::$observer) static::$observer->deleted();
         return $deleted;
     }
 
@@ -370,7 +373,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      */
     public function getAlias(): string
     {
-        return $this->tableAlias;
+        return static::$TABLE_ALIAS;
     }
 
     /**

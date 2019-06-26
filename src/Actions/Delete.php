@@ -15,10 +15,12 @@ class Delete extends Action
      */
     protected $id;
 
-    public function __construct(DatabaseModel $dbModel, array $fields, $id, ?string $customSql = NULL)
+    public function __construct($id, string $table, string $primaryKey)
     {
-        parent::__construct($dbModel, $fields, $customSql);
+        parent::__construct(NULL, NULL);
         $this->id = $id;
+        $this->primaryKey = $primaryKey;
+        $this->tableName = $table;
     }
 
     public function save(): bool
