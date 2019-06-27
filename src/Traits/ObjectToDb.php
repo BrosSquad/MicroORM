@@ -22,7 +22,7 @@ trait ObjectToDb
      */
     public final function bindToPdoType(&$value, ?int $optionalType = NULL): int
     {
-        if (is_null($optionalType)) {
+        if ($optionalType === NULL) {
             switch (true) {
                 case is_int($value):
                     return PDO::PARAM_INT;
@@ -30,22 +30,20 @@ trait ObjectToDb
                     return PDO::PARAM_BOOL;
                 case is_null($value):
                     return PDO::PARAM_NULL;
+                case is_object($value):
+                    $type = get_class($value);
+                    $customType = array_key_exists($type, static::$customTypes) ? static::$customTypes[$type] : NULL;
+                    if ($customType !== NULL) {
+                        $set = $customType->bind($value);
+                        $value = $set->value;
+                        return $set->key;
+                    }
+                    break;
                 case is_string($value):
-                    if(strlen($value) > 4096)
+                    if (strlen($value) > 4096)
                         return PDO::PARAM_LOB;
                     return PDO::PARAM_STR;
             }
-            $type = gettype($value);
-            /**
-             * @var BindToDatabase $customType
-             */
-            $customType = array_key_exists($type, static::$customTypes) ? static::$customTypes[$type] : NULL;
-            if ($customType !== NULL) {
-                $set = $customType->bind($value);
-                $value = $set->value;
-                return $set->key;
-            }
-
             return PDO::PARAM_STR;
         } else {
             return $optionalType;
