@@ -30,7 +30,7 @@ class User extends Model
     /** @var \Carbon\CarbonInterface */
     protected $updated_at;
 
-    protected function posts() {
+    public function posts() {
         return $this->hashMany('posts', 'user_id');
     }
 }
