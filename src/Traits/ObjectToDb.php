@@ -39,8 +39,8 @@ trait ObjectToDb
             /**
              * @var BindToDatabase $customType
              */
-            $customType = static::$customTypes[$type];
-            if (isset($customType)) {
+            $customType = array_key_exists($type, static::$customTypes) ? static::$customTypes[$type] : NULL;
+            if ($customType !== NULL) {
                 $set = $customType->bind($value);
                 $value = $set->value;
                 return $set->key;

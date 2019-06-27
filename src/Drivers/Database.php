@@ -324,7 +324,7 @@ abstract class Database implements Driver
     {
         return $model->lock(function () use ($model, $mappings) {
             foreach ($mappings as $key => $value) {
-                $this->bindFromPdoToObject($model->{$key}, $value);
+                $this->bindFromPdoToObject($model,$key, $value);
 //                $model->{$key} = $value;
             }
             return $model;

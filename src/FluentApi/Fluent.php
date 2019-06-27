@@ -367,7 +367,7 @@ class Fluent implements FluentInterface
     public function get()
     {
         if ($this->data === NULL) {
-            return $this->asCollection();
+            $this->data = $this->asCollection();
         }
         return $this->data;
     }

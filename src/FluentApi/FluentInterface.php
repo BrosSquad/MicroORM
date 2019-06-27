@@ -131,7 +131,7 @@ interface FluentInterface
     /**
      * Gets the data from database by previous called methods
      *
-     * @return array
+     * @return array|\Dusan\PhpMvc\Collections\Collection
      * @throws \PDOException
      */
     public function get();

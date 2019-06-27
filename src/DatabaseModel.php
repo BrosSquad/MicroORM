@@ -135,7 +135,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
 
     public function __call($name, $arguments)
     {
-        if (strcmp($name, 'setExists')) {
+        if (strcmp($name, 'setExists') === 0) {
             $this->fromDb($arguments[0], $arguments[1]);
             return;
         }
@@ -290,13 +290,13 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings = [];
             foreach ($this->getVariables() as $name => $value) {
                 if (!isset($this->protected[$name])) {
-                    $bindings[$name] = ':' . $name;
+                    $bindings[$name] = $name;
                 }
             }
         }
         if (property_exists($this, static::UPDATED_AT)) {
             $this->{static::CREATED_AT} = CarbonImmutable::now();
-            $bindings[static::CREATED_AT] = ':' . static::CREATED_AT;
+            $bindings[static::CREATED_AT] = static::CREATED_AT;
         }
         $save = new Save($this, $bindings, true, $sql ?? NULL);
         if (static::$observer) static::$observer->creating();
@@ -318,7 +318,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
             $bindings = $this->setUpdateBindings();
         } else {
             $bindings = $this->changed;
-            $bindings[static::PRIMARY_KEY] = ':' . static::PRIMARY_KEY;
         }
         if (property_exists($this, static::UPDATED_AT)) {
             $this->{static::UPDATED_AT} = CarbonImmutable::now();

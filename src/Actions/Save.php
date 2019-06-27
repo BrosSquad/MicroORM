@@ -19,9 +19,9 @@ class Save extends Action
      * Save constructor.
      *
      * @param \BrosSquad\MicroORM\DatabaseModel $dbModel
-     * @param array                                $fields
-     * @param bool                                 $isInsert
-     * @param string|null                          $customSql
+     * @param array                             $fields
+     * @param bool                              $isInsert
+     * @param string|null                       $customSql
      */
     public function __construct(DatabaseModel $dbModel, array $fields, bool $isInsert = false, ?string $customSql = NULL)
     {
@@ -57,12 +57,12 @@ class Save extends Action
     protected function generateUpdateStatement(): string
     {
         if ($this->customSql) return $this->customSql;
-        if (empty($this->changed)) {
+        if (empty($this->fields)) {
             return '';
         }
         $sql = 'UPDATE ' . $this->tableName . ' SET';
-        foreach ($this->changed as $change => $value) {
-            $sql .= " {$change}={$value},";
+        foreach ($this->fields as $change => $value) {
+                $sql .= " {$change}={$value},";
         }
         $sql = rtrim($sql, ',');
 
@@ -127,8 +127,10 @@ class Save extends Action
             $this->saveOrFail();
             return true;
         } catch (PDOException $e) {
-            return false;
+            if (defined('DEBUG') && DEBUG === true)
+                throw $e;
         }
+        return false;
     }
 
 

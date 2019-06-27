@@ -4,49 +4,50 @@
 namespace BrosSquad\MicroORM\Traits;
 
 
+use BrosSquad\MicroORM\Model;
 use TypeError;
 
 trait DbToObject
 {
 
-    public function bindFromPdoToObject(&$property, $value)
+    public function bindFromPdoToObject(Model $model, $key, $value)
     {
         if (PHP_MAJOR_VERSION > 7 && PHP_MINOR_VERSION > 4) {
-            $type = gettype($property);
+            $type = gettype($model->{$key});
             $valueType = gettype($value);
             switch (strtolower($type)) {
                 case 'string':
-                    $property = (string)$value;
+                    $model->{$key} = (string)$value;
                     break;
                 case 'integer':
                     if ($valueType !== 'integer') {
                         throw new TypeError('Value is not integer');
                     }
-                    $property = (integer)$value;
+                    $model->{$key} = (integer)$value;
                     break;
                 case 'double':
                     if ($valueType !== 'double') {
                         throw new TypeError('Value is not double');
                     }
-                    $property = (double)$value;
+                    $model->{$key} = (double)$value;
                     break;
                 case 'object':
                 case 'null':
                 default:
                     /** @var \BrosSquad\MicroORM\BindFromDatabase $bind */
-                    $bind = static::$customBind[get_class($property ?? 0) !== false ?: ''] ?? NULL;
+                    $bind = static::$customBind[get_class($model->{$key} ?? 0) !== false ?: ''] ?? NULL;
 
                     if ($bind === NULL) {
-                        $property = $value;
+                        $model->{$key} = $value;
                     } else {
-                        $property = $bind->bind($value);
+                        $model->{$key} = $bind->bind($value);
                     }
                     break;
             }
         }
         else {
             // TODO: add annotations parser
-            $property = $value;
+            $model->{$key} = $value;
         }
 
     }

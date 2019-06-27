@@ -15,7 +15,6 @@ use BrosSquad\MicroORM\Relations\HasMany;
 
 /**
  * @method setExists(Database $param, bool $true)
- * @method delete($id)
  */
 abstract class Model extends DatabaseModel implements HasManyInterface, BelongsToInterface
 {
@@ -44,7 +43,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
 
     public function __call($name, $arguments)
     {
-        if(strcmp($name, 'delete')) {
+        if(strcmp($name, 'delete') === 0) {
             return $this->deleteOnInstance();
         }
         return parent::__call($name, $arguments);
@@ -71,7 +70,7 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
                 if(count($arguments) !== 1) {
                     throw new ArgumentCountError('Not enough arguments passed to the method');
                 }
-                return static::deleteOnStatic($instance, $arguments[0]);
+                return static::deleteOnStatic($arguments[0]);
             default:
                 return parent::__callStatic($name, $arguments);
         }
