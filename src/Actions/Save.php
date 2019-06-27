@@ -107,6 +107,7 @@ class Save extends Action
                 $driver->bindValue($bind, $this->dbModel->{$name});
             }
 
+            $driver->bindValue($this->primaryKey, $this->dbModel->{$this->primaryKey});
             $driver->execute(NULL, true);
         });
     }
