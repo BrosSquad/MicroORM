@@ -6,6 +6,11 @@ namespace BrosSquad\MicroORM\FluentApi;
 
 use PDO;
 
+/**
+ * Class AdvancedFluent
+ *
+ * @package BrosSquad\MicroORM\FluentApi
+ */
 class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentInterface
 {
 
@@ -48,6 +53,13 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         return $this->where($column, '=', $value);
     }
 
+    /**
+     * @param string $column
+     * @param        $start
+     * @param        $end
+     *
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
+     */
     public function whereBetween(string $column, $start, $end): FluentInterface
     {
         $this->where = 'WHERE ' . $column . 'BETWEEN :start, :end ';
@@ -63,6 +75,12 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         return $this->newWhere();
     }
 
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
+     */
     public function whereIn(string $column, array $values): FluentInterface
     {
         $this->where = "WHERE {$column} IN (";
@@ -80,12 +98,22 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         return $this->newWhere();
     }
 
-
+    /**
+     * @param array $values
+     *
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
+     */
     public function wherePrimaryKey(array $values): FluentInterface
     {
         return $this->whereIn($this->primaryKey, $values);
     }
 
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
+     */
     public function whereNotIn(string $column, array $values): FluentInterface
     {
         $this->where = "WHERE {$column} NOT IN (";
@@ -103,6 +131,11 @@ class AdvancedFluent extends Fluent implements FluentInterface, AdvancedFluentIn
         return $this->newWhere();
     }
 
+    /**
+     * @param array $values
+     *
+     * @return \BrosSquad\MicroORM\FluentApi\FluentInterface
+     */
     public function whereNotPrimaryKey(array $values): FluentInterface
     {
         return $this->whereNotIn($this->primaryKey, $values);

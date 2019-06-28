@@ -115,11 +115,11 @@ abstract class Model extends DatabaseModel implements HasManyInterface, BelongsT
      * @return static|null If there is no record in database null is returned
      * @example "../../docs/Database/find.php"
      */
-    protected function find( $id, $select = ['*']): ?Model
+    protected function find( $id, ...$select): ?Model
     {
         return $this->query()
             ->where(static::PRIMARY_KEY, '=', $id)
-            ->select($select)
+            ->select(...$select)
             ->get();
     }
 

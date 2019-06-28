@@ -22,13 +22,13 @@ interface FluentInterface
     /**
      * @api
      *
-     * @param array $select
+     * @param array ...$select
      *
      * @return $this
      */
-    public function select($select = ['*']);
+    public function select( ...$select);
 
-    public function selectDistinct($select = ['*']);
+    public function selectDistinct(...$select);
 
     /**
      * @return string

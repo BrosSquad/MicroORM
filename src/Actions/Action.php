@@ -13,32 +13,32 @@ abstract class Action implements Savable
     /**
      * @var \BrosSquad\MicroORM\DatabaseModel
      */
-    protected $dbModel;
+    protected DatabaseModel $dbModel;
 
     /**
      * @var array
      */
-    protected $fields;
+    protected array $fields;
 
     /**
      * @var string
      */
-    protected $primaryKey;
+    protected string $primaryKey;
 
     /**
      * @var string
      */
-    protected $tableName;
+    protected string $tableName;
 
     /**
      * @var string|null
      */
-    protected $customSql;
+    protected ?string $customSql;
 
     /**
      * @var \BrosSquad\MicroORM\Driver
      */
-    protected static $driver;
+    protected static Driver $driver;
 
 
     /**

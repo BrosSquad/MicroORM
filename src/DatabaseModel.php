@@ -32,19 +32,19 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     /**
      * @var null|array
      */
-    private $variables = NULL;
+    private ?array $variables = NULL;
 
     /**
      * @var null|string
      */
-    private $calledClass = NULL;
+    private ?string $calledClass = NULL;
 
     /**
      * Flag that indicates if Model exists in Database
      *
      * @var bool
      */
-    protected $modelExists = false;
+    protected bool $modelExists = false;
 
 
     /**
@@ -52,16 +52,16 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      *
      * @var string
      */
-    protected static $TABLE_ALIAS = '';
+    protected static string $TABLE_ALIAS = '';
 
     /**
      * Name of the table in the database
      * defaults to __CLASS__ + 's'
      * modified by setTable() method
      *
-     * @var string
+     * @var string|null
      */
-    protected static $TABLE = NULL;
+    protected static ?string $TABLE = NULL;
 
     /**
      * Guarded array restricts the Json serializes from showing
@@ -70,7 +70,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      *
      * @var array
      */
-    protected $guarded = [];
+    protected array $guarded = [];
 
     /**
      * When member of class is accessed
@@ -82,7 +82,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * @source
      * @var array
      */
-    private $changed = [];
+    private array $changed = [];
 
     /**
      * Protected array protects data in the model,
@@ -93,12 +93,12 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      * @api
      * @var array
      */
-    protected $protected = [];
+    protected array $protected = [];
 
     /**
      * @var bool
      */
-    private $lock = false;
+    private bool $lock = false;
 
     public function __construct(array $properties = [])
     {
@@ -142,7 +142,11 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         throw new MethodNotFound('Method with name ' . $name . ' is not found');
     }
 
-    private function guardedFields()
+
+    /**
+     * @return void
+     */
+    private function guardedFields(): void
     {
         $this->guarded[] = 'changed';
         $this->guarded[] = 'lock';
@@ -153,7 +157,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         $this->guarded[] = 'modelExists';
     }
 
-    private function protectedFields()
+    private function protectedFields(): void
     {
         $this->protected[] = 'changed';
         $this->protected[] = 'lock';
@@ -175,7 +179,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
         return static::$TABLE;
     }
 
-    public function getPrimaryKeyName()
+    public function getPrimaryKeyName(): string
     {
         return static::PRIMARY_KEY;
     }
@@ -333,7 +337,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
     /**
      * @return bool
      */
-    public function save()
+    public function save(): bool
     {
         if ($this->modelExists) {
             return $this->update();
@@ -358,7 +362,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      *
      * @return bool
      */
-    protected static function deleteOnStatic($id)
+    protected static function deleteOnStatic($id): bool
     {
         $delete = new Delete($id, static::$TABLE, static::PRIMARY_KEY);
         if (static::$observer) static::$observer->deleting();

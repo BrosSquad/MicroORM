@@ -21,7 +21,7 @@
     }
   },
   "require": {
-    "php": ">=7.3.0",
+    "php": ">=7.4.0",
     "psr/container": "^1.0",
     "dusan/php-mvc-collections": "^1.1",
     "ext-pdo": "*",

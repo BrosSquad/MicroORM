@@ -3,7 +3,7 @@
 namespace BrosSquad\MicroORM\Events;
 
 
-use BrosSquad\MicroORM\DatabaseModel;
+use BrosSquad\MicroORM\Model;
 
 /**
  * Interface Observer
@@ -33,18 +33,18 @@ interface Observer
     /**
      * This method runs when model is already inserted
      *
-     * @param \BrosSquad\MicroORM\DatabaseModel $model
+     * @param \BrosSquad\MicroORM\Model $model
      */
-    public function created(DatabaseModel $model): void;
+    public function created(Model $model): void;
 
     /**
      * This method runs when model is already updated
      *
-     * @param \BrosSquad\MicroORM\DatabaseModel $model
+     * @param \BrosSquad\MicroORM\Model $model
      *
      * @return void
      */
-    public function updated(DatabaseModel $model): void;
+    public function updated(Model $model): void;
 
     /**
      * This method runs when model is already deleted

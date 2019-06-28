@@ -5,26 +5,43 @@ namespace BrosSquad\MicroORM\Relations;
 
 /**
  * Class OneToMany
- * @author Dusan Malusev<dusan.998@outlook.com>
+ *
+ * @author  Dusan Malusev<dusan.998@outlook.com>
  * @package BrosSquad\MicroORM\Relations
  * @internal
  */
 abstract class OneToMany implements Relation
 {
-    protected $referenceTable;
-    protected $referenceKey;
-    protected $foreignKey;
-    protected $foreignTable;
+    /**
+     * @var string
+     */
+    protected string $referenceTable;
+
+    /**
+     * @var string
+     */
+    protected string $referenceKey;
+
+    /**
+     * @var string
+     */
+    protected string $foreignKey;
+
+    /**
+     * @var string
+     */
+    protected string $foreignTable;
+
 
     /**
      * OneToMany constructor.
      *
-     * @param $referenceTable
-     * @param $referenceKey
-     * @param $foreignKey
-     * @param $foreignTable
+     * @param string $referenceTable
+     * @param string $referenceKey
+     * @param string $foreignTable
+     * @param string $foreignKey
      */
-    public function __construct($referenceTable, $referenceKey, $foreignTable, $foreignKey)
+    public function __construct(string $referenceTable, string $referenceKey, string $foreignTable, string $foreignKey)
     {
         $this->referenceTable = $referenceTable;
         $this->referenceKey = $referenceKey;
@@ -33,33 +50,33 @@ abstract class OneToMany implements Relation
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getReferenceTable()
+    public function getReferenceTable(): string
     {
         return $this->referenceTable;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getReferenceKey()
+    public function getReferenceKey(): string
     {
         return $this->referenceKey;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getForeignKey()
+    public function getForeignKey(): string
     {
         return $this->foreignKey;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getForeignTable()
+    public function getForeignTable(): string
     {
         return $this->foreignTable;
     }

@@ -7,7 +7,7 @@ use stdClass;
 
 class Where extends Fluent
 {
-    protected $sql;
+    protected string $sql;
 
     public function __construct(
         Model& $model,

@@ -8,7 +8,7 @@ use stdClass;
 
 class GroupBy extends Fluent
 {
-    protected $sql;
+    protected string $sql;
 
     public function __construct(
         Model& $model,

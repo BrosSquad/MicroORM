@@ -11,7 +11,7 @@ class Having extends Fluent
     /**
      * @var string
      */
-    protected $having = '';
+    protected string $having = '';
 
     public function __construct(
         Model& $model,

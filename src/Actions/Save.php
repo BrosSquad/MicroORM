@@ -13,7 +13,7 @@ class Save extends Action
     /**
      * @var bool
      */
-    protected $isInsert;
+    protected bool $isInsert;
 
     /**
      * Save constructor.

@@ -10,6 +10,7 @@ use DateTimeInterface;
 use PDO;
 use PDOException;
 use PDOStatement;
+use ReflectionClass;
 use RuntimeException;
 use stdClass;
 
@@ -21,16 +22,16 @@ abstract class Database implements Driver
     use DbToObject;
 
     /**
-     * @var array<string,\BrosSquad\MicroORM\BindToDatabase>
+     * @var array<string,\BrosSquad\MicroORM\BindToDatabase|string>
      */
-    protected static $customTypes = [
-        DateTimeInterface::class => DateTimeBinding::class
+    protected static array $customTypes = [
+        DateTimeInterface::class => DateTimeBinding::class,
     ];
 
     /**
      * @var array<string, \BrosSquad\MicroORM\BindFromDatabase>
      */
-    protected static $customBind = [];
+    protected static array $customBind = [];
 
     /**
      * Internal database connection
@@ -38,7 +39,7 @@ abstract class Database implements Driver
      * @internal
      * @var PDO
      */
-    protected $pdo = NULL;
+    protected ?PDO $pdo = NULL;
 
     /**
      * PDO fetch mode
@@ -46,21 +47,21 @@ abstract class Database implements Driver
      *
      * @var int
      */
-    protected static $fetchMode = PDO::FETCH_ASSOC;
+    protected static int $fetchMode = PDO::FETCH_ASSOC;
 
     /**
      * SQL Statement to be executed
      *
      * @var string
      */
-    protected $sql = '';
+    protected string $sql = '';
 
     /**
      * Default fetch class
      *
      * @var string
      */
-    protected $className = stdClass::class;
+    protected string $className = stdClass::class;
 
     /**
      * Sql Prepared statement
@@ -68,7 +69,7 @@ abstract class Database implements Driver
      * @internal
      * @var PDOStatement
      */
-    protected $statement = NULL;
+    protected ?PDOStatement $statement = NULL;
 
     /**
      * Database constructor
@@ -94,7 +95,7 @@ abstract class Database implements Driver
      * @return bool
      * @throws \PDOException
      */
-    public final function startTransaction()
+    public final function startTransaction(): bool
     {
         return $this->pdo->beginTransaction();
     }
@@ -147,7 +148,7 @@ abstract class Database implements Driver
      * @param string         $type
      * @param BindToDatabase $binding
      */
-    public static function setCustomTypes(string $type, BindToDatabase $binding)
+    public static function setCustomTypes(string $type, BindToDatabase $binding): void
     {
         static::$customTypes[$type] = $binding;
     }
@@ -155,10 +156,10 @@ abstract class Database implements Driver
     /**
      * Binds value from the database to the object
      *
-     * @param string                           $type
+     * @param string                               $type
      * @param \BrosSquad\MicroORM\BindFromDatabase $binding
      */
-    public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding)
+    public static function bindFromDatabaseToCustomObject(string $type, BindFromDatabase $binding): void
     {
         static::$customBind[$type] = $binding;
     }
@@ -323,15 +324,17 @@ abstract class Database implements Driver
     /**
      * @inheritDoc
      */
-    protected function mapping(Model $model, array $mappings)
+    protected function mapping(Model $model, array & $mappings, array & $properties)
     {
-        return $model->lock(function () use ($model, $mappings) {
-            foreach ($mappings as $key => $value) {
-                $this->bindFromPdoToObject($model,$key, $value);
-//                $model->{$key} = $value;
-            }
-            return $model;
-        });
+        return $model->lock(fn () => $this->map($model, $mappings, $properties));
+    }
+
+    private function map(Model & $model, array & $mappings, array & $properties)
+    {
+        foreach ($mappings as $key => $value) {
+            $this->bindFromPdoToObject($model, $key, $value, $properties[$key]);
+        }
+        return $model;
     }
 
     /**
@@ -342,26 +345,47 @@ abstract class Database implements Driver
     public function execute(?int $fetchMode = NULL, bool $insertOrUpdate = false)
     {
         return $this->execution(
-            function (PDOStatement $statement) {
-                $newObjects = [];
-                while (($arr = $statement->fetch(static::$fetchMode)) !== false) {
-                    /** @var Model $instance */
-                    $instance = new $this->className();
-                    $instance->setExists($this, true);
-                    $newObjects[] = $this->mapping($instance, $arr);
-                }
-                return $newObjects;
-            },
+            fn (PDOStatement $statement): array => $this->mapAllObjects($statement),
             $fetchMode,
             $insertOrUpdate
         );
     }
 
+    /**
+     * @param \PDOStatement $statement
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    private function mapAllObjects(PDOStatement & $statement): array
+    {
+        $newObjects = [];
+        $instance = new $this->className();
+        $reflex = new ReflectionClass($instance);
+        $props = $this->getAllProperties($reflex);
+        $i = 0;
+        while (($arr = $statement->fetch(static::$fetchMode)) !== false) {
+            /** @var Model $instance */
+            if ($i == 0) {
+                $i++;
+            } else {
+                $instance = new $this->className();
+            }
+            $instance->setExists($this, true);
+            $newObjects[] = $this->mapping($instance, $arr, $props);
+            $i++;
+        }
+        return $newObjects;
 
+    }
 
-    // Custom Binding
-
-    private static function dateTimeBinding(): DateTimeBinding {
-        return new DateTimeBinding();
+    private function getAllProperties(ReflectionClass & $reflectionClass): array
+    {
+        $props = [];
+        $reflexProps = $reflectionClass->getProperties();
+        foreach ($reflexProps as $prop) {
+            $props[$prop->getName()] = $prop->getType();
+        }
+        return $props;
     }
 }

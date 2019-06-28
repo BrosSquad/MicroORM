@@ -24,81 +24,86 @@ class Fluent implements FluentInterface
 {
 
     use Random;
-    protected $current = 0;
+
     /**
-     * @internal
-     * @var string
+     * @var int
      */
-    protected $select = '';
+    protected int $current = 0;
 
     /**
      * @internal
      * @var string
      */
-    protected $join = '';
+    protected string $select = '';
 
     /**
      * @internal
      * @var string
      */
-    protected $where = '';
+    protected string $join = '';
 
     /**
      * @internal
      * @var string
      */
-    protected $limit = '';
+    protected string $where = '';
 
     /**
      * @internal
      * @var string
      */
-    protected $orderBy = '';
+    protected string $limit = '';
 
     /**
      * @internal
      * @var string
      */
-    protected $groupBy = '';
+    protected string $orderBy = '';
+
+    /**
+     * @internal
+     * @var string
+     */
+    protected string $groupBy = '';
 
     /**
      * @var Driver
      * @internal
      */
-    protected static $database;
+    protected static Driver $database;
 
     /**
      * @var string
      * @internal
      */
-    protected $sql;
+    protected string $sql;
 
     /**
      * @var string
      * @internal
      */
-    protected $bind;
+    protected string $bind;
 
     /**
      * @var string
      * @internal
      */
-    protected $table;
+    protected string $table;
 
     /**
      * @var string
      */
-    protected $primaryKey;
+    protected string $primaryKey;
 
     /**
      * @var array
      */
-    protected $bindings = [];
+    protected array $bindings = [];
 
     /**
      * @var Model
      */
-    protected $model;
+    protected Model $model;
 
 
     /**
@@ -106,7 +111,10 @@ class Fluent implements FluentInterface
      */
     protected $data = NULL;
 
-    protected $alias = '';
+    /**
+     * @var string
+     */
+    protected string $alias = '';
 
     /**
      * Fluent constructor.
@@ -153,14 +161,20 @@ class Fluent implements FluentInterface
      *
      * @return \BrosSquad\MicroORM\FluentApi\Fluent
      */
-    public function select($select = ['*']): Fluent
+    public function select(...$select): Fluent
     {
+        if (is_array($select) && empty($select)) {
+            $select = ['*'];
+        }
         $this->select = 'SELECT ' . join(',', $select) . ' FROM ' . $this->table . ' ';
         return $this;
     }
 
-    public function selectDistinct($select = ['*']): Fluent
+    public function selectDistinct(...$select): Fluent
     {
+        if (is_array($select) && empty($select)) {
+            $select = ['*'];
+        }
         $this->select = 'SELECT DISTINCT' .
             join(',', $select) .
             'FROM ' .
@@ -195,7 +209,7 @@ class Fluent implements FluentInterface
     public function where($column, $operator, $value): Where
     {
         $generated = $this->whereGenerator($column, $operator, $value);
-        $this->where = "WHERE {$generated}";
+        $this->where = 'WHERE ' . $generated;
         return $this->newWhere();
     }
 
@@ -208,7 +222,7 @@ class Fluent implements FluentInterface
      */
     public function whereNull($column): Where
     {
-        $this->where = "WHERE {$column} IS NULL ";
+        $this->where = 'WHERE' . $column . ' IS NULL ';
         return $this->newWhere();
     }
 
@@ -221,7 +235,7 @@ class Fluent implements FluentInterface
      */
     public function whereNotNull($column): Where
     {
-        $this->where = "WHERE {$column} IS NOT NULL ";
+        $this->where = 'WHERE ' . $column . 'IS NOT NULL ';
         return $this->newWhere();
     }
 
@@ -426,7 +440,6 @@ class Fluent implements FluentInterface
         $this->join = "{$joinType} JOIN {$relation->getForeignTable()} ON {$relation->getRelation()} ";
         return $this;
     }
-
 
 
     public static function setDatabase(Driver $database): void
