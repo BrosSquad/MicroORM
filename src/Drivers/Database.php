@@ -4,8 +4,9 @@
 namespace BrosSquad\MicroORM\Drivers;
 
 use Closure;
-use BrosSquad\MicroORM\{BindFromDatabase, BindToDatabase, DatabaseModel, Driver, Model};
+use BrosSquad\MicroORM\{BindFromDatabase, BindToDatabase, CustomBindings\DateTimeBinding, DatabaseModel, Driver, Model};
 use BrosSquad\MicroORM\Traits\{DbToObject, MemberWithDash, ObjectToDb};
+use DateTimeInterface;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -20,9 +21,11 @@ abstract class Database implements Driver
     use DbToObject;
 
     /**
-     * @var array<string,\BrosSquad\MicroORM\BindFromDatabase>
+     * @var array<string,\BrosSquad\MicroORM\BindToDatabase>
      */
-    protected static $customTypes = [];
+    protected static $customTypes = [
+        DateTimeInterface::class => DateTimeBinding::class
+    ];
 
     /**
      * @var array<string, \BrosSquad\MicroORM\BindFromDatabase>
@@ -354,4 +357,11 @@ abstract class Database implements Driver
         );
     }
 
+
+
+    // Custom Binding
+
+    private static function dateTimeBinding(): DateTimeBinding {
+        return new DateTimeBinding();
+    }
 }

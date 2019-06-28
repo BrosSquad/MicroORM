@@ -30,13 +30,21 @@ trait ObjectToDb
                     return PDO::PARAM_BOOL;
                 case is_null($value):
                     return PDO::PARAM_NULL;
+                case is_array($value):
+                    $value = join(',', $value);
+                    return PDO::PARAM_STR;
                 case is_object($value):
                     $type = get_class($value);
                     $customType = array_key_exists($type, static::$customTypes) ? static::$customTypes[$type] : NULL;
                     if ($customType !== NULL) {
-                        $set = $customType->bind($value);
-                        $value = $set->value;
-                        return $set->key;
+                        if(is_string($customType)) {
+                            $customType = new $customType();
+                        }
+                        if($customType instanceof BindToDatabase) {
+                            $set = $customType->bind($value);
+                            $value = $set->value;
+                            return $set->key;
+                        }
                     }
                     break;
                 case is_string($value):

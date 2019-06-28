@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 class MicroORMTestCase extends TestCase
 {
     const DRIVER = 'mysql';
-    const DATABASE_NAME = 'microorm_blog';
+    const DATABASE_NAME = 'sakila';
     const HOST = 'localhost';
-    const USER = 'root';
+    const USER = 'microorm';
     const PASSWORD = '';
 
     /** @var \PDO */
