@@ -46,7 +46,6 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
      */
     protected $modelExists = false;
 
-
     /**
      * Alias for the table
      *
@@ -294,7 +293,7 @@ abstract class DatabaseModel extends AbstractModel implements Serializable, Json
                 }
             }
         }
-        if (property_exists($this, static::UPDATED_AT)) {
+        if (property_exists($this, static::CREATED_AT)) {
             $this->{static::CREATED_AT} = CarbonImmutable::now();
             $bindings[static::CREATED_AT] = static::CREATED_AT;
         }

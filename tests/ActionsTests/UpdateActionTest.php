@@ -5,29 +5,38 @@ namespace BrosSquad\MicroORM\Tests\ActionsTests;
 
 
 use BrosSquad\MicroORM\Tests\MicroORMTestCase;
-use BrosSquad\MicroORM\Tests\Models\User;
+use BrosSquad\MicroORM\Tests\Models\Actor;
 
 class UpdateActionTest extends MicroORMTestCase
 {
     public function test_update()
     {
-        /** @var User|null $user */
-        $user = User::query()->whereEquals('email', 'test@test.com')->get()->firstOrDefault();
+        /** @var Actor $actor */
+        $actor = Actor::query()->whereEquals('first_name', 'Test')->get();
 
+        $actor = $actor[0] ?? NULL;
 
-        $user->name = 'Dusan';
+        if ($actor === NULL) {
+            $this->fail('Run first insert action test');
+        }
 
-        $this->assertTrue($user->update());
+        $actor->first_name = 'Dusan';
+
+        $this->assertTrue($actor->update());
     }
 
     public function test_update_with_save_method()
     {
-        /** @var User|null $user */
-        $user = User::query()->whereEquals('email', 'test@testwithsave.com')->get()->firstOrDefault();
 
+        /** @var Actor $actor */
+        $actor = Actor::query()->whereEquals('first_name', 'Test')->get()->firstOrDefault();
 
-        $user->name = 'Dusan';
+        if ($actor === NULL) {
+            $this->fail('Run first insert action test');
+        }
 
-        $this->assertTrue($user->save());
+        $actor->first_name = 'Dusan';
+
+        $this->assertTrue($actor->save());
     }
 }
