@@ -6,6 +6,11 @@ namespace BrosSquad\MicroORM\Tests\Models;
 
 use BrosSquad\MicroORM\Model;
 
+/**
+ * Class Actor
+ *
+ * @package BrosSquad\MicroORM\Tests\Models
+ */
 class Actor extends Model
 {
     protected const PRIMARY_KEY = 'actor_id';

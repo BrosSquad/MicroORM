@@ -5,7 +5,8 @@ namespace BrosSquad\MicroORM\Tests\ActionsTests;
 
 
 use BrosSquad\MicroORM\Tests\MicroORMTestCase;
-use BrosSquad\MicroORM\Tests\Models\User;
+use BrosSquad\MicroORM\Tests\Models\Actor;
+use Carbon\CarbonImmutable;
 
 class InsertActionTest extends MicroORMTestCase
 {
@@ -14,27 +15,26 @@ class InsertActionTest extends MicroORMTestCase
      */
     public function test_insert_into()
     {
-        $user = new User([
-            'name' => 'Test',
-            'surname' => 'Test',
-            'email' => 'test@test.com',
-            'password' => 'test123'
+        $actor = new Actor([
+            'first_name' => 'Test',
+            'last_name' => 'Test',
+            'last_update' => CarbonImmutable::now()
         ]);
 
-        $hasInserted = $user->insert();
+        $hasInserted = $actor->insert();
 
         $this->assertTrue($hasInserted);
     }
 
     public function test_insert_with_save() {
-        $user = new User([
-            'name' => 'Test',
-            'surname' => 'Test',
-            'email' => 'test@testwithsave.com',
-            'password' => 'test123'
+
+        $actor = new Actor([
+            'first_name' => 'Test2',
+            'last_name' => 'Test2',
+            'last_update' => CarbonImmutable::now()
         ]);
 
-        $hasInserted = $user->save();
+        $hasInserted = $actor->save();
 
         $this->assertTrue($hasInserted);
     }
